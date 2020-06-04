@@ -29,6 +29,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 /**
@@ -61,8 +62,27 @@ public class TankFrame extends JFrame {
     this.addKeyListener(new MyKeyListener());
   }
 
+  private BufferedImage image;
+  private Graphics imageGraphics;
+
   @Override
   public void paint(Graphics g) {
+    // buffer for swing, fix the twinkle.
+    if (image == null) {
+      image = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+      imageGraphics = image.createGraphics();
+    }
+    imageGraphics.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    imageGraphics.setColor(Color.WHITE);
+
+    // draw to buffer
+    drawTank(imageGraphics);
+
+    // output buffer to screen
+    g.drawImage(image, 0, 0, null);
+  }
+
+  private void drawTank(Graphics g) {
     Color c = g.getColor();
     g.setColor(Color.YELLOW);
     // draw the tank
