@@ -25,6 +25,8 @@ package com.github.flysium.io.tank.view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.HeadlessException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
@@ -39,6 +41,8 @@ public class TankFrame extends JFrame {
 
   public static final int WINDOW_WIDTH = 800;
   public static final int WINDOW_HEIGHT = 600;
+  private int x = 50;
+  private int y = 50;
 
   public TankFrame() throws HeadlessException {
     this.setTitle("The War of Tank");
@@ -52,6 +56,9 @@ public class TankFrame extends JFrame {
         System.exit(0);
       }
     });
+
+    // add Key listener
+    this.addKeyListener(new MyKeyListener());
   }
 
   @Override
@@ -59,9 +66,41 @@ public class TankFrame extends JFrame {
     Color c = g.getColor();
     g.setColor(Color.YELLOW);
     // draw the tank
-    g.fillRect(50, 50, 50, 50);
+    g.fillRect(x, y, 50, 50);
     // reset Graphics's color
     g.setColor(c);
+  }
+
+  private class MyKeyListener extends KeyAdapter {
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+      switch (e.getKeyCode()) {
+        case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_A:
+          // Key Left / Key A: Move Left
+          x -= 10;
+          break;
+        case KeyEvent.VK_RIGHT:
+        case KeyEvent.VK_D:
+          // Key Right / Key D: Move Right
+          x += 10;
+          break;
+        case KeyEvent.VK_UP:
+        case KeyEvent.VK_W:
+          // Key Up / Key W: Move Up
+          y -= 10;
+          break;
+        case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_S:
+          // Key Down / Key S: Move Down
+          y += 10;
+          break;
+        default:
+          break;
+      }
+    }
+
   }
 
 }

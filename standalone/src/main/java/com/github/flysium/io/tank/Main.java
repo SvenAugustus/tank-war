@@ -23,6 +23,7 @@
 package com.github.flysium.io.tank;
 
 import com.github.flysium.io.tank.view.TankFrame;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main
@@ -35,6 +36,18 @@ public class Main {
   public static void main(String[] args) {
     TankFrame ui = new TankFrame();
     ui.setVisible(true);
+
+    new Thread(() -> {
+      while (true) {
+        try {
+          TimeUnit.MILLISECONDS.sleep(50);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        // repaint
+        ui.repaint();
+      }
+    }, "repaint").start();
   }
 
 }
