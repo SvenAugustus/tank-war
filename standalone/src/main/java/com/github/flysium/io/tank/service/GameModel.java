@@ -70,6 +70,14 @@ public class GameModel {
         draw(g, (Bullet) gameObject);
       }
     });
+
+    Color c = g.getColor();
+    g.setColor(Color.BLACK);
+    long tanksCount = gameObjects.values().stream().filter(o -> o instanceof Tank).count();
+    long bulletsCount = gameObjects.values().stream().filter(o -> o instanceof Bullet).count();
+    g.drawString("Tanks: " + tanksCount + ", Bullets: " + bulletsCount, 10, 40);
+    // reset Graphics's color
+    g.setColor(c);
   }
 
   private void draw(Graphics g, Tank tank) {
@@ -82,6 +90,22 @@ public class GameModel {
     // draw the tank
     Rectangle location = tank.getLocation();
     g.fillRect(location.x, location.y, location.width, location.height);
+    // reset Graphics's color
+    g.setColor(c);
+  }
+
+  private void draw(Graphics g, Bullet bullet) {
+    if (!bullet.isAlive()) {
+      gameObjects.remove(bullet.getId());
+      return;
+    }
+    bullet.fly();
+
+    Color c = g.getColor();
+    g.setColor(Color.RED);
+    // draw the tank
+    Rectangle location = bullet.getLocation();
+    g.fillOval(location.x, location.y, location.width, location.height);
     // reset Graphics's color
     g.setColor(c);
   }

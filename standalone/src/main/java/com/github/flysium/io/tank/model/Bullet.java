@@ -90,7 +90,12 @@ public abstract class Bullet extends BaseFlyable implements Flyable, Lifecycle {
     }
 
     // enable move to outbound
-    return new DirectionRectangle(x, y, initialDirection, shape, owner.getBounds());
+    return new DirectionRectangle(x, y, initialDirection, shape, false, owner.getBounds());
+  }
+
+  @Override
+  public boolean isAlive() {
+    return super.isAlive() && !this.getDirectionRectangle().isOutbound();
   }
 
 }

@@ -41,18 +41,30 @@ public class DirectionRectangle implements PositionRectangle {
   // shape
   private final DirectionRectangularShape shape;
 
+  // disable the object move to outbound
+  private final boolean disableOutbound;
+
   // bounds
   private final FinalRectangle bounds;
+
+  // outbound flag
+  private boolean outbound;
 
   // snapshot
   private Rectangle snapshot;
 
   public DirectionRectangle(final int x, final int y, final Direction initialDirection,
       DirectionRectangularShape shape, FinalRectangle bounds) {
+    this(x, y, initialDirection, shape, true, bounds);
+  }
+
+  public DirectionRectangle(final int x, final int y, final Direction initialDirection,
+      DirectionRectangularShape shape, boolean disableOutbound, FinalRectangle bounds) {
     this.location = new Rectangle(x, y, shape.getWidth(initialDirection),
         shape.getHeight(initialDirection));
     this.direction = initialDirection;
     this.shape = shape;
+    this.disableOutbound = disableOutbound;
     this.bounds = bounds;
     this.snapshot = updateSnapshot();
   }
@@ -77,6 +89,15 @@ public class DirectionRectangle implements PositionRectangle {
   }
 
   /**
+   * weather the object is outbound or not.
+   *
+   * @return return true if it is outbound, otherwise return false.
+   */
+  public boolean isOutbound() {
+    return outbound;
+  }
+
+  /**
    * Get the bounds
    *
    * @return bounds
@@ -85,6 +106,7 @@ public class DirectionRectangle implements PositionRectangle {
   public FinalRectangle getBounds() {
     return bounds;
   }
+
 
   /**
    * update snapshot
@@ -159,19 +181,32 @@ public class DirectionRectangle implements PositionRectangle {
    */
   protected void setLocation(Direction direction, int x, int y) {
     // bounds check
+
     if (x < bounds.x) {
-      x = bounds.x;
+      if (disableOutbound) {
+        x = bounds.x;
+      }
+      outbound = true;
     }
     final int shapeWidth = shape.getWidth(direction);
     if ((x + shapeWidth) >= (bounds.x + bounds.width)) {
-      x = (bounds.x + bounds.width) - shapeWidth;
+      if (disableOutbound) {
+        x = (bounds.x + bounds.width) - shapeWidth;
+      }
+      outbound = true;
     }
     if (y < bounds.y) {
-      y = bounds.y;
+      if (disableOutbound) {
+        y = bounds.y;
+      }
+      outbound = true;
     }
     final int shapeHeight = shape.getHeight(direction);
     if ((y + shapeHeight) >= (bounds.y + bounds.height)) {
-      y = (bounds.y + bounds.height) - shapeHeight;
+      if (disableOutbound) {
+        y = (bounds.y + bounds.height) - shapeHeight;
+      }
+      outbound = true;
     }
 
     // Moves this Rectangle to the specified location.

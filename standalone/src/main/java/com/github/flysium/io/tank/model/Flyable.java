@@ -28,21 +28,7 @@ package com.github.flysium.io.tank.model;
  * @author Sven Augustus
  * @version 1.0
  */
-public interface Flyable {
-
-  /**
-   * Get the flying speed.
-   *
-   * @return return zero if can not flying, otherwise return the flying speed.
-   */
-  int getSpeed();
-
-  /**
-   * Get the current   <code>Direction</code>
-   *
-   * @return current <code>Direction</code>
-   */
-  Direction getDirection();
+public interface Flyable extends Movable {
 
   /**
    * flying this <code>DirectionRectangle</code> location.
