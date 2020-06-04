@@ -25,6 +25,8 @@ package com.github.flysium.io.tank.config;
 import com.github.flysium.io.tank.config.utils.PropertiesUtils;
 import com.github.flysium.io.tank.service.fire.DefaultFireStrategy;
 import com.github.flysium.io.tank.service.fire.FireStrategy;
+import com.github.flysium.io.tank.service.painter.GameObjectPainter;
+import com.github.flysium.io.tank.service.painter.SimpleGameObjectPainter;
 import java.util.function.Function;
 
 /**
@@ -36,6 +38,8 @@ import java.util.function.Function;
 public final class GameConfig {
 
   // game initialization
+  private final String painter;
+
   private final int mainTankInitialHealth;
   private final int mainTankMovingSpeed;
 
@@ -66,6 +70,16 @@ public final class GameConfig {
 
   private GameConfig() {
     // game initialization
+    painter = PropertiesUtils.getProperty("game.painter"
+        , v -> {
+          try {
+            Class<?> clazz = Class.forName(v);
+            return GameObjectPainter.class.isAssignableFrom(clazz);
+          } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+          }
+          return false;
+        }, SimpleGameObjectPainter.class.getCanonicalName());
     mainTankInitialHealth = PropertiesUtils
         .getIntegerProperty("game.mainTank.initialHealth", v -> v > 0, 100);
     mainTankMovingSpeed = PropertiesUtils
@@ -95,6 +109,10 @@ public final class GameConfig {
 
   public static GameConfig getSingleton() {
     return Holder.INSTANCE;
+  }
+
+  public String getPainter() {
+    return painter;
   }
 
   public int getMainTankInitialHealth() {

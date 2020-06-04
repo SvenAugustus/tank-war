@@ -70,7 +70,7 @@ public class GameModel {
 
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
-    this.painter = new SimpleGameObjectPainter();
+    this.painter = newGameObjectPainter(gameConfig.getPainter());
     this.gameObjectFactory = new DefaultGameObjectFactory();
 
     // init main tank
@@ -84,6 +84,23 @@ public class GameModel {
         createTank(Group.ENEMY_GROUP, 150 + 100 * i, 100).arise();
       }
     }
+  }
+
+  /**
+   * new <code>GameObjectPainter</code>.
+   *
+   * @param clazzName class name of <code>GameObjectPainter</code>.
+   * @return <code>GameObjectPainter</code> instance.
+   */
+  @SuppressWarnings("unchecked")
+  private GameObjectPainter newGameObjectPainter(String clazzName) {
+    try {
+      Class<GameObjectPainter> clazz = (Class<GameObjectPainter>) Class.forName(clazzName);
+      return clazz.newInstance();
+    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+    return new SimpleGameObjectPainter();
   }
 
   /**
