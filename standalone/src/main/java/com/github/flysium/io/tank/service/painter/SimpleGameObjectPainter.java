@@ -24,9 +24,11 @@ package com.github.flysium.io.tank.service.painter;
 
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.DirectionRectangularShape;
+import com.github.flysium.io.tank.model.Explode;
 import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Tank;
+import com.github.flysium.io.tank.model.Wall;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -53,8 +55,14 @@ public class SimpleGameObjectPainter implements GameObjectPainter {
     if (gameObject instanceof Tank) {
       paint(g, (Tank) gameObject);
     }
+    if (gameObject instanceof Explode) {
+      paint(g, (Explode) gameObject);
+    }
     if (gameObject instanceof Bullet) {
       paint(g, (Bullet) gameObject);
+    }
+    if (gameObject instanceof Wall) {
+      paint(g, (Wall) gameObject);
     }
   }
 
@@ -76,6 +84,10 @@ public class SimpleGameObjectPainter implements GameObjectPainter {
     g.setColor(c);
   }
 
+  protected void paint(Graphics g, Explode explode) {
+    // TODO
+  }
+
   protected void paint(Graphics g, Bullet bullet) {
     if (!bullet.isAlive()) {
       return;
@@ -87,6 +99,19 @@ public class SimpleGameObjectPainter implements GameObjectPainter {
     // draw the tank
     Rectangle location = bullet.getLocation();
     g.fillOval(location.x, location.y, location.width, location.height);
+    // reset Graphics's color
+    g.setColor(c);
+  }
+
+  protected void paint(Graphics g, Wall wall) {
+    if (!wall.isAlive()) {
+      return;
+    }
+    Color c = g.getColor();
+    g.setColor(Color.DARK_GRAY);
+    // draw the tank
+    Rectangle location = wall.getLocation();
+    g.fillRect(location.x, location.y, location.width, location.height);
     // reset Graphics's color
     g.setColor(c);
   }

@@ -26,7 +26,6 @@ import com.github.flysium.io.tank.config.ResourceManager;
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.DirectionRectangularShape;
 import com.github.flysium.io.tank.model.Explode;
-import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Tank;
 import java.awt.Color;
@@ -41,33 +40,13 @@ import java.util.List;
  * @author Sven Augustus
  * @version 1.0
  */
-public class GraphicalGameObjectPainter implements GameObjectPainter {
+public class GraphicalGameObjectPainter extends SimpleGameObjectPainter implements
+    GameObjectPainter {
 
   private final ResourceManager resourceManager = ResourceManager.getSingleton();
 
   @Override
-  public void paint(Graphics g, Color color, String message) {
-    Color c = g.getColor();
-    g.setColor(color);
-    g.drawString(message, 10, 40);
-    // reset Graphics's color
-    g.setColor(c);
-  }
-
-  @Override
-  public void paint(Graphics g, GameObject gameObject) {
-    if (gameObject instanceof Tank) {
-      paint(g, (Tank) gameObject);
-    }
-    if (gameObject instanceof Explode) {
-      paint(g, (Explode) gameObject);
-    }
-    if (gameObject instanceof Bullet) {
-      paint(g, (Bullet) gameObject);
-    }
-  }
-
-  private void paint(Graphics g, Tank tank) {
+  protected void paint(Graphics g, Tank tank) {
     if (!tank.isAlive()) {
       return;
     }
@@ -89,7 +68,8 @@ public class GraphicalGameObjectPainter implements GameObjectPainter {
     g.setColor(c);
   }
 
-  private void paint(Graphics g, Explode explode) {
+  @Override
+  protected void paint(Graphics g, Explode explode) {
     if (!explode.isAlive()) {
       return;
     }
@@ -115,7 +95,8 @@ public class GraphicalGameObjectPainter implements GameObjectPainter {
     g.setColor(c);
   }
 
-  private void paint(Graphics g, Bullet bullet) {
+  @Override
+  protected void paint(Graphics g, Bullet bullet) {
     if (!bullet.isAlive()) {
       return;
     }

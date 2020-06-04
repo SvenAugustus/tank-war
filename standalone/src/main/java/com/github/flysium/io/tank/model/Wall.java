@@ -22,63 +22,16 @@
 
 package com.github.flysium.io.tank.model;
 
-import java.util.Objects;
-import java.util.UUID;
-
 /**
- * Group, same group is allies
+ * Wall
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Group {
+public class Wall extends GameObject {
 
-  // Group ID
-  private final String groupId = UUID.randomUUID().toString();
-
-  // Group Code
-  private final String groupCode;
-
-  public Group(String groupCode) {
-    this.groupCode = groupCode;
+  public Wall(StaticRectangle location) {
+    super(Group.SYSTEM_GROUP, location, Integer.MAX_VALUE);
   }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public String getGroupCode() {
-    return groupCode;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Group group = (Group) o;
-    return Objects.equals(groupId, group.groupId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(groupId);
-  }
-
-  /**
-   * System Group
-   */
-  public static final Group SYSTEM_GROUP = new Group("system");
-  /**
-   * Main Group
-   */
-  public static final Group MAIN_GROUP = new Group("main");
-  /**
-   * Enemy Group
-   */
-  public static final Group ENEMY_GROUP = new Group("enemy");
 
 }

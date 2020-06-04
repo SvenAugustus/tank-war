@@ -33,8 +33,10 @@ import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Lifecycle;
+import com.github.flysium.io.tank.model.StaticRectangle;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
+import com.github.flysium.io.tank.model.Wall;
 import com.github.flysium.io.tank.service.automatic.AutomaticStrategy;
 import com.github.flysium.io.tank.service.automatic.RandomAutomaticStrategy;
 import com.github.flysium.io.tank.service.collision.PhysicsCollisionDetectorChain;
@@ -83,9 +85,15 @@ public class GameModel {
     int initEnemyTanksCount = gameConfig.getInitEnemyTanksCount();
     if (initEnemyTanksCount > 0) {
       for (int i = 0; i < initEnemyTanksCount; i++) {
-        createTank(Group.ENEMY_GROUP, 150 + 100 * i, 100).arise();
+        createTank(Group.ENEMY_GROUP, 150 + 100 * i, 80).arise();
       }
     }
+
+    // init walls
+    createWall(new StaticRectangle(150, 150, 200, 50)).arise();
+    createWall(new StaticRectangle(550, 150, 200, 50)).arise();
+    createWall(new StaticRectangle(300, 300, 50, 200)).arise();
+    createWall(new StaticRectangle(550, 300, 50, 200)).arise();
   }
 
   /**
@@ -139,9 +147,11 @@ public class GameModel {
       painter.paint(g, Color.BLUE, "You Win the War !");
       stop = true;
     } else {
+      long wallsCount = gameObjects.values().stream().filter(o -> o instanceof Wall).count();
       long tanksCount = gameObjects.values().stream().filter(o -> o instanceof Tank).count();
       long bulletsCount = gameObjects.values().stream().filter(o -> o instanceof Bullet).count();
-      painter.paint(g, Color.BLACK, "Tanks: " + tanksCount + ", Bullets: " + bulletsCount);
+      painter.paint(g, Color.BLACK, "Walls: " + wallsCount + ", Tanks: " + tanksCount
+          + ", Bullets: " + bulletsCount);
     }
   }
 
@@ -242,6 +252,15 @@ public class GameModel {
             .build()));
     gameObjects.putIfAbsent(bullet.getId(), bullet);
     return bullet;
+  }
+
+  /**
+   * create a wall
+   */
+  public Wall createWall(StaticRectangle rectangle) {
+    Wall wall = new Wall(rectangle);
+    gameObjects.putIfAbsent(wall.getId(), wall);
+    return wall;
   }
 
   private final AutomaticConfig automaticConfig = AutomaticConfig.getSingleton();

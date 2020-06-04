@@ -22,63 +22,38 @@
 
 package com.github.flysium.io.tank.model;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.awt.Rectangle;
 
 /**
- * Group, same group is allies
+ * Static <code>PositionRectangle</code>
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Group {
+public class StaticRectangle implements PositionRectangle {
 
-  // Group ID
-  private final String groupId = UUID.randomUUID().toString();
+  public final int x;
+  public final int y;
+  public final int width;
+  public final int height;
+  private final Rectangle snapshot;
 
-  // Group Code
-  private final String groupCode;
-
-  public Group(String groupCode) {
-    this.groupCode = groupCode;
-  }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public String getGroupCode() {
-    return groupCode;
+  public StaticRectangle(int x, int y, int width, int height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.snapshot = new Rectangle(x, y, width, height);
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Group group = (Group) o;
-    return Objects.equals(groupId, group.groupId);
+  public Rectangle getSnapshot() {
+    return snapshot;
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(groupId);
+  public FinalRectangle getBounds() {
+    return null;
   }
-
-  /**
-   * System Group
-   */
-  public static final Group SYSTEM_GROUP = new Group("system");
-  /**
-   * Main Group
-   */
-  public static final Group MAIN_GROUP = new Group("main");
-  /**
-   * Enemy Group
-   */
-  public static final Group ENEMY_GROUP = new Group("enemy");
 
 }

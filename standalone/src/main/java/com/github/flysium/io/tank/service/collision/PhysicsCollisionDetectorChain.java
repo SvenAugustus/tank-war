@@ -38,6 +38,8 @@ public class PhysicsCollisionDetectorChain implements PhysicsCollisionDetector {
 
   public PhysicsCollisionDetectorChain() {
     register(new BulletTankPhysicsCollisionDetector());
+    register(new BulletWallPhysicsCollisionDetector());
+    register(new TankWallPhysicsCollisionDetector());
     register(new TankTankPhysicsCollisionDetector());
   }
 
