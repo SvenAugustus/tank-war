@@ -45,6 +45,11 @@ public interface Movable {
   Direction getDirection();
 
   /**
+   * back off
+   */
+  void back();
+
+  /**
    * Change <code>Direction</code> to prepare moving
    *
    * @param direction <code>Direction</code>

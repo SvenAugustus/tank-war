@@ -20,57 +20,37 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.model;
+package com.github.flysium.io.tank.service.collision;
+
+import com.github.flysium.io.tank.model.GameObject;
+import com.github.flysium.io.tank.model.Tank;
 
 /**
- * abstract <code>Movable</code>
+ * <code>PhysicsCollisionDetector</code> between <code>Tank</code> and <code>Tank</code>
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class BaseMovable extends GameObject implements Movable, Lifecycle {
-
-  // speed.
-  protected final int speed;
-
-  public BaseMovable(Group group, DirectionRectangle location, int speed) {
-    super(group, location);
-    this.speed = speed;
-  }
-
-  protected DirectionRectangle getDirectionRectangle() {
-    return (DirectionRectangle) this.location;
-  }
+public class TankTankPhysicsCollisionDetector implements PhysicsCollisionDetector {
 
   @Override
-  public int getSpeed() {
-    return speed;
-  }
-
-  @Override
-  public Direction getDirection() {
-    return this.getDirectionRectangle().getDirection();
-  }
-
-  @Override
-  public void back() {
-    this.getDirectionRectangle().back();
-  }
-
-  @Override
-  public void changeDirection(Direction direction) {
-    if (!isAlive()) {
-      return;
+  public boolean detect(GameObject a, GameObject b) {
+    if (a == b) {
+      return false;
     }
-    this.getDirectionRectangle().changeDirection(direction);
-  }
-
-  @Override
-  public void moveOn() {
-    if (!isAlive()) {
-      return;
+    if (a instanceof Tank && b instanceof Tank) {
+      Tank that = (Tank) a;
+      Tank other = (Tank) b;
+      if (that.isAlive() && other.isAlive()
+          // physics collision occurs when they intersects is true
+          && that.getLocation().intersects(other.getLocation())
+      ) {
+        // handle physics collision
+        that.back();
+        other.back();
+      }
     }
-    this.getDirectionRectangle().refresh(speed);
+    return false;
   }
 
 }

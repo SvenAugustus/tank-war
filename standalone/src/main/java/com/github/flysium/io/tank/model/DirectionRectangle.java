@@ -53,6 +53,9 @@ public class DirectionRectangle implements PositionRectangle {
   // snapshot
   private Rectangle snapshot;
 
+  // previous position
+  private Rectangle previousSnapshot;
+
   public DirectionRectangle(final int x, final int y, final Direction initialDirection,
       DirectionRectangularShape shape, FinalRectangle bounds) {
     this(x, y, initialDirection, shape, true, bounds);
@@ -67,6 +70,7 @@ public class DirectionRectangle implements PositionRectangle {
     this.disableOutbound = disableOutbound;
     this.bounds = bounds;
     this.snapshot = updateSnapshot();
+    this.previousSnapshot = snapshot;
   }
 
   /**
@@ -136,6 +140,17 @@ public class DirectionRectangle implements PositionRectangle {
   }
 
   /**
+   * back off
+   */
+  public void back() {
+    location.x = previousSnapshot.x;
+    location.y = previousSnapshot.y;
+    location.width = previousSnapshot.width;
+    location.height = previousSnapshot.height;
+    snapshot = previousSnapshot;
+  }
+
+  /**
    * Change <code>Direction</code> to prepare moving
    *
    * @param direction <code>Direction</code>
@@ -181,7 +196,6 @@ public class DirectionRectangle implements PositionRectangle {
    */
   protected void setLocation(Direction direction, int x, int y) {
     // bounds check
-
     if (x < bounds.x) {
       if (disableOutbound) {
         x = bounds.x;
@@ -213,6 +227,7 @@ public class DirectionRectangle implements PositionRectangle {
     this.location.setLocation(x, y);
 
     // update snapshot
+    this.previousSnapshot = snapshot;
     this.snapshot = updateSnapshot();
   }
 
