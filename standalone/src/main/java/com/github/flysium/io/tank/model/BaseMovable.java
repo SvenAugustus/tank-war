@@ -33,8 +33,8 @@ public abstract class BaseMovable extends GameObject implements Movable, Lifecyc
   // speed.
   protected final int speed;
 
-  public BaseMovable(DirectionRectangle location, int speed) {
-    super(location);
+  public BaseMovable(Group group, DirectionRectangle location, int speed) {
+    super(group, location);
     this.speed = speed;
   }
 

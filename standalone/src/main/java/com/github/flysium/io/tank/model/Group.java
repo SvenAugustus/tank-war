@@ -22,34 +22,41 @@
 
 package com.github.flysium.io.tank.model;
 
-import com.github.flysium.io.tank.service.GameModel;
+import java.util.UUID;
 
 /**
- * abstract Tank.
+ * Group, same group is allies
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class Tank extends BaseMovable implements Movable, Lifecycle {
+public class Group {
 
-  private final GameModel gameModel;
+  // Group ID
+  private final String groupId = UUID.randomUUID().toString();
 
-  public Tank(Group group, final int x, final int y, TankAttributes attributes,
-      final GameModel gameModel) {
-    super(group, new DirectionRectangle(x, y,
-            attributes.getInitialDirection(), attributes.getShape(), attributes.getBounds()),
-        attributes.getMovingSpeed());
-    this.gameModel = gameModel;
+  // Group Code
+  private final String groupCode;
+
+  public Group(String groupCode) {
+    this.groupCode = groupCode;
+  }
+
+  public String getGroupId() {
+    return groupId;
+  }
+
+  public String getGroupCode() {
+    return groupCode;
   }
 
   /**
-   * fire out
+   * Main Group
    */
-  public void fire() {
-    Bullet bullet = gameModel.createBullet(this);
-    if (bullet != null) {
-      bullet.arise();
-    }
-  }
+  public static final Group MAIN_GROUP = new Group("main");
+  /**
+   * Enemy Group
+   */
+  public static final Group ENEMY_GROUP = new Group("enemy");
 
 }

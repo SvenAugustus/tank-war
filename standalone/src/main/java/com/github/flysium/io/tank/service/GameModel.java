@@ -30,6 +30,7 @@ import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.DirectionRectangularShape;
 import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.GameObject;
+import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
 import java.awt.Color;
@@ -52,8 +53,16 @@ public class GameModel {
 
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
-    this.mainTank = createTank(50, 50);
+
+    // init main tank
+    this.mainTank = createTank(Group.MAIN_GROUP, 50, 50);
     this.mainTank.arise();
+
+    // init enemy tanks
+    createTank(Group.ENEMY_GROUP, 150, 100).arise();
+    createTank(Group.ENEMY_GROUP, 250, 100).arise();
+    createTank(Group.ENEMY_GROUP, 350, 100).arise();
+    createTank(Group.ENEMY_GROUP, 450, 100).arise();
   }
 
   /**
@@ -86,7 +95,7 @@ public class GameModel {
       return;
     }
     Color c = g.getColor();
-    g.setColor(Color.YELLOW);
+    g.setColor(Group.MAIN_GROUP.equals(tank.getGroup()) ? Color.YELLOW : Color.GRAY);
     // draw the tank
     Rectangle location = tank.getLocation();
     g.fillRect(location.x, location.y, location.width, location.height);
@@ -138,8 +147,8 @@ public class GameModel {
   /**
    * create a tank
    */
-  private Tank createTank(final int x, final int y) {
-    return createTank(x, y,
+  private Tank createTank(Group group, final int x, final int y) {
+    return createTank(group, x, y,
         TankAttributes.builder()
             .initialDirection(Direction.RIGHT)
             .shape(new DirectionRectangularShape(50))
@@ -150,8 +159,8 @@ public class GameModel {
   /**
    * create a tank
    */
-  private Tank createTank(final int x, final int y, TankAttributes attributes) {
-    Tank tank = new DefaultTank(x, y, attributes, this);
+  private Tank createTank(Group group, final int x, final int y, TankAttributes attributes) {
+    Tank tank = new DefaultTank(group, x, y, attributes, this);
     gameObjects.putIfAbsent(tank.getId(), tank);
     return tank;
   }

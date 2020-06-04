@@ -32,8 +32,8 @@ import com.github.flysium.io.tank.service.GameModel;
  */
 public class DefaultTank extends Tank {
 
-  public DefaultTank(int x, int y, TankAttributes attributes,
-      GameModel gameModel) {
-    super(x, y, attributes, gameModel);
+  public DefaultTank(Group group, int x, int y,
+      TankAttributes attributes, GameModel gameModel) {
+    super(group, x, y, attributes, gameModel);
   }
 }

@@ -35,7 +35,8 @@ public abstract class Bullet extends BaseFlyable implements Flyable, Lifecycle {
   private final Tank owner;
 
   public Bullet(final Tank owner, BulletAttributes attributes) {
-    super(createDirectionRectangle(owner, attributes.getInitialDirection(), attributes.getShape()),
+    super(owner.getGroup(),
+        createDirectionRectangle(owner, attributes.getInitialDirection(), attributes.getShape()),
         attributes.getBulletFlyingSpeed());
     this.owner = owner;
   }

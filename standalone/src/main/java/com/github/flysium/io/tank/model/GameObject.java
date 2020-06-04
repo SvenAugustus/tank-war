@@ -36,13 +36,17 @@ public abstract class GameObject implements Lifecycle {
   // ID
   protected final String id = UUID.randomUUID().toString();
 
+  // same group is allies
+  private final Group group;
+
   // location
   protected final PositionRectangle location;
 
   // alive flag
   protected boolean alive = false;
 
-  public GameObject(PositionRectangle location) {
+  public GameObject(Group group, PositionRectangle location) {
+    this.group = group;
     this.location = location;
   }
 
@@ -53,6 +57,15 @@ public abstract class GameObject implements Lifecycle {
    */
   public String getId() {
     return id;
+  }
+
+  /**
+   * Get what Group it belongs to.
+   *
+   * @return <code>Group</code>
+   */
+  public Group getGroup() {
+    return group;
   }
 
   /**

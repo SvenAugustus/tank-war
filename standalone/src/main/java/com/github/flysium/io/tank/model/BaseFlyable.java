@@ -30,8 +30,8 @@ package com.github.flysium.io.tank.model;
  */
 public abstract class BaseFlyable extends BaseMovable implements Flyable, Lifecycle {
 
-  public BaseFlyable(DirectionRectangle location, int speed) {
-    super(location, speed);
+  public BaseFlyable(Group group, DirectionRectangle location, int speed) {
+    super(group, location, speed);
   }
 
   @Override
