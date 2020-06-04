@@ -22,6 +22,10 @@
 
 package com.github.flysium.io.tank.view;
 
+import com.github.flysium.io.tank.model.Direction;
+import com.github.flysium.io.tank.model.FinalRectangle;
+import com.github.flysium.io.tank.service.GameService;
+import com.github.flysium.io.tank.service.GameServiceImpl;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.HeadlessException;
@@ -42,8 +46,8 @@ public class TankFrame extends JFrame {
 
   public static final int WINDOW_WIDTH = 800;
   public static final int WINDOW_HEIGHT = 600;
-  private int x = 50;
-  private int y = 50;
+  private final GameService gameService = new GameServiceImpl(
+      new FinalRectangle(2, 25, WINDOW_WIDTH - 4, WINDOW_HEIGHT - 29));
 
   public TankFrame() throws HeadlessException {
     this.setTitle("The War of Tank");
@@ -76,19 +80,10 @@ public class TankFrame extends JFrame {
     imageGraphics.setColor(Color.WHITE);
 
     // draw to buffer
-    drawTank(imageGraphics);
+    gameService.paint(imageGraphics);
 
     // output buffer to screen
     g.drawImage(image, 0, 0, null);
-  }
-
-  private void drawTank(Graphics g) {
-    Color c = g.getColor();
-    g.setColor(Color.YELLOW);
-    // draw the tank
-    g.fillRect(x, y, 50, 50);
-    // reset Graphics's color
-    g.setColor(c);
   }
 
   private class MyKeyListener extends KeyAdapter {
@@ -99,28 +94,27 @@ public class TankFrame extends JFrame {
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_A:
           // Key Left / Key A: Move Left
-          x -= 10;
+          gameService.moveMainTankByDirection(Direction.LEFT);
           break;
         case KeyEvent.VK_RIGHT:
         case KeyEvent.VK_D:
           // Key Right / Key D: Move Right
-          x += 10;
+          gameService.moveMainTankByDirection(Direction.RIGHT);
           break;
         case KeyEvent.VK_UP:
         case KeyEvent.VK_W:
           // Key Up / Key W: Move Up
-          y -= 10;
+          gameService.moveMainTankByDirection(Direction.UP);
           break;
         case KeyEvent.VK_DOWN:
         case KeyEvent.VK_S:
           // Key Down / Key S: Move Down
-          y += 10;
+          gameService.moveMainTankByDirection(Direction.DOWN);
           break;
         default:
           break;
       }
     }
-
   }
 
 }
