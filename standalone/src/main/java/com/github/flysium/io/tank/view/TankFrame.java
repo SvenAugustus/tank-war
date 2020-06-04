@@ -86,6 +86,10 @@ public class TankFrame extends JFrame {
     g.drawImage(image, 0, 0, null);
   }
 
+  public void automatic() {
+    gameService.automatic();
+  }
+
   private class MyKeyListener extends KeyAdapter {
 
     @Override

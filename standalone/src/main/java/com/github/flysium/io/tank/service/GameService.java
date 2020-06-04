@@ -51,4 +51,10 @@ public interface GameService {
    * Fire the main <code>Tank</code>
    */
   void fireMainTank();
+
+  /**
+   * run automatic tasks
+   */
+  void automatic();
+
 }

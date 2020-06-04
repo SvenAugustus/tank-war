@@ -58,4 +58,9 @@ public class GameServiceImpl implements GameService {
     gameModel.getMainTank().fire();
   }
 
+  @Override
+  public void automatic() {
+    gameModel.automatic();
+  }
+
 }

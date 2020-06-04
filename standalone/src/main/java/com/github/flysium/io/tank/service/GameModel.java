@@ -31,6 +31,7 @@ import com.github.flysium.io.tank.model.DirectionRectangularShape;
 import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
+import com.github.flysium.io.tank.model.Lifecycle;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
 import com.github.flysium.io.tank.service.collision.PhysicsCollisionDetectorChain;
@@ -39,6 +40,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -54,6 +56,7 @@ public class GameModel {
   private final Map<String, GameObject> gameObjects = new ConcurrentHashMap<>();
 
   private final PhysicsCollisionDetectorChain physicsCollisionDetectorChain = new PhysicsCollisionDetectorChain();
+  private volatile boolean stop = false;
 
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
@@ -89,13 +92,20 @@ public class GameModel {
     });
 
     // messages.
-    Color c = g.getColor();
-    g.setColor(Color.BLACK);
-    long tanksCount = gameObjects.values().stream().filter(o -> o instanceof Tank).count();
-    long bulletsCount = gameObjects.values().stream().filter(o -> o instanceof Bullet).count();
-    g.drawString("Tanks: " + tanksCount + ", Bullets: " + bulletsCount, 10, 40);
-    // reset Graphics's color
-    g.setColor(c);
+    if (!mainTank.isAlive()) {
+      drawMessage(g, "You Lose the War !", Color.RED);
+      stop = true;
+    } else if (gameObjects.values().stream()
+        .filter(gameObject -> gameObject instanceof Tank && Group.ENEMY_GROUP
+            .equals(gameObject.getGroup())).noneMatch(
+            Lifecycle::isAlive)) {
+      drawMessage(g, "You Win the War !", Color.BLUE);
+      stop = true;
+    } else {
+      long tanksCount = gameObjects.values().stream().filter(o -> o instanceof Tank).count();
+      long bulletsCount = gameObjects.values().stream().filter(o -> o instanceof Bullet).count();
+      drawMessage(g, "Tanks: " + tanksCount + ", Bullets: " + bulletsCount, Color.BLACK);
+    }
   }
 
   private void draw(Graphics g, Tank tank) {
@@ -140,6 +150,14 @@ public class GameModel {
     // draw the tank
     Rectangle location = bullet.getLocation();
     g.fillOval(location.x, location.y, location.width, location.height);
+    // reset Graphics's color
+    g.setColor(c);
+  }
+
+  private void drawMessage(Graphics g, String message, Color color) {
+    Color c = g.getColor();
+    g.setColor(color);
+    g.drawString(message, 10, 40);
     // reset Graphics's color
     g.setColor(c);
   }
@@ -209,4 +227,30 @@ public class GameModel {
     return bullet;
   }
 
+  /**
+   * automatic make enemies tanks to action (stop, go, fire, etc.)
+   */
+  public void automatic() {
+    if (stop) {
+      return;
+    }
+    gameObjects.values().stream()
+        .filter(gameObject -> gameObject instanceof Tank
+            && Group.ENEMY_GROUP.equals(gameObject.getGroup()))
+        .forEach(gameObject -> {
+          if (!gameObject.isAlive()) {
+            return;
+          }
+          Tank tank = (Tank) gameObject;
+          Random random = new Random();
+          int probability = random.nextInt(100);
+          if (probability < 5) {
+            tank.fire();
+          } else if (probability < 10) {
+            tank.changeDirection(Direction.values()[random.nextInt(4)]);
+          } else if (probability < 60) {
+            tank.moveOn();
+          }
+        });
+  }
 }

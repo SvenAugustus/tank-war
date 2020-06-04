@@ -40,7 +40,7 @@ public class Main {
     new Thread(() -> {
       while (true) {
         try {
-          TimeUnit.MILLISECONDS.sleep(50);
+          TimeUnit.MILLISECONDS.sleep(25);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -48,6 +48,17 @@ public class Main {
         ui.repaint();
       }
     }, "repaint").start();
+
+    new Thread(() -> {
+      while (true) {
+        try {
+          TimeUnit.MILLISECONDS.sleep(200);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        ui.automatic();
+      }
+    }, "automatic").start();
   }
 
 }

@@ -54,11 +54,17 @@ public abstract class BaseMovable extends GameObject implements Movable, Lifecyc
 
   @Override
   public void changeDirection(Direction direction) {
+    if (!isAlive()) {
+      return;
+    }
     this.getDirectionRectangle().changeDirection(direction);
   }
 
   @Override
   public void moveOn() {
+    if (!isAlive()) {
+      return;
+    }
     this.getDirectionRectangle().refresh(speed);
   }
 

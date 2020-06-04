@@ -46,6 +46,9 @@ public abstract class Tank extends BaseMovable implements Movable, Lifecycle {
    * fire out
    */
   public void fire() {
+    if (!isAlive()) {
+      return;
+    }
     Bullet bullet = gameModel.createBullet(this);
     if (bullet != null) {
       bullet.arise();
