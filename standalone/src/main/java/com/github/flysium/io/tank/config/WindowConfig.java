@@ -20,48 +20,50 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank;
+package com.github.flysium.io.tank.config;
 
-import com.github.flysium.io.tank.config.WindowConfig;
-import com.github.flysium.io.tank.view.TankFrame;
-import java.util.concurrent.TimeUnit;
+import com.github.flysium.io.tank.config.utils.PropertiesUtils;
 
 /**
- * Main
+ * The configuration of window.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Main {
+public final class WindowConfig {
 
-  private static final WindowConfig WINDOW_CONFIG = WindowConfig.getSingleton();
+  private final int windowWidth;
 
-  public static void main(String[] args) {
-    TankFrame ui = new TankFrame(WINDOW_CONFIG);
-    ui.setVisible(true);
+  private final int windowHeight;
 
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(WINDOW_CONFIG.getRefreshMillis());
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        // repaint
-        ui.repaint();
-      }
-    }, "repaint").start();
+  private final int refreshMillis;
 
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(200);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        ui.automatic();
-      }
-    }, "automatic").start();
+  private WindowConfig() {
+    windowWidth = PropertiesUtils.getIntegerProperty("window.width", v -> v >= 800, 800);
+    windowHeight = PropertiesUtils.getIntegerProperty("window.height", v -> v >= 600, 600);
+    refreshMillis = PropertiesUtils.getIntegerProperty("window.refreshMillis", v -> v >= 25, 50);
+  }
+
+  public static WindowConfig getSingleton() {
+    return Holder.INSTANCE;
+  }
+
+  public int getWindowWidth() {
+    return windowWidth;
+  }
+
+  public int getWindowHeight() {
+    return windowHeight;
+  }
+
+  public int getRefreshMillis() {
+    return refreshMillis;
+  }
+
+  private static class Holder {
+
+    // singleton instance.
+    static final WindowConfig INSTANCE = new WindowConfig();
   }
 
 }

@@ -22,6 +22,7 @@
 
 package com.github.flysium.io.tank.view;
 
+import com.github.flysium.io.tank.config.WindowConfig;
 import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.service.GameService;
@@ -44,12 +45,16 @@ import javax.swing.JFrame;
  */
 public class TankFrame extends JFrame {
 
-  public static final int WINDOW_WIDTH = 800;
-  public static final int WINDOW_HEIGHT = 600;
-  private final GameService gameService = new GameServiceImpl(
-      new FinalRectangle(2, 25, WINDOW_WIDTH - 4, WINDOW_HEIGHT - 29));
+  private final int WINDOW_WIDTH;
+  private final int WINDOW_HEIGHT;
+  private final GameService gameService;
 
-  public TankFrame() throws HeadlessException {
+  public TankFrame(WindowConfig windowConfig) throws HeadlessException {
+    this.WINDOW_WIDTH = windowConfig.getWindowWidth();
+    this.WINDOW_HEIGHT = windowConfig.getWindowHeight();
+    this.gameService = new GameServiceImpl(new FinalRectangle(2, 25,
+        WINDOW_WIDTH - 4, WINDOW_HEIGHT - 29));
+
     this.setTitle("The War of Tank");
     this.setBounds(200, 200, WINDOW_WIDTH, WINDOW_HEIGHT);
     this.setResizable(false);

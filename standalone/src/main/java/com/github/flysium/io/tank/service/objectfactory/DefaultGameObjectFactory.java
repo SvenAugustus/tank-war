@@ -20,48 +20,39 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank;
+package com.github.flysium.io.tank.service.objectfactory;
 
-import com.github.flysium.io.tank.config.WindowConfig;
-import com.github.flysium.io.tank.view.TankFrame;
-import java.util.concurrent.TimeUnit;
+import com.github.flysium.io.tank.model.Bullet;
+import com.github.flysium.io.tank.model.BulletAttributes;
+import com.github.flysium.io.tank.model.DefaultBullet;
+import com.github.flysium.io.tank.model.DefaultTank;
+import com.github.flysium.io.tank.model.Group;
+import com.github.flysium.io.tank.model.Tank;
+import com.github.flysium.io.tank.model.TankAttributes;
+import com.github.flysium.io.tank.service.GameModel;
 
 /**
- * Main
+ * Default <code>GameObjectFactory</code>
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Main {
+public class DefaultGameObjectFactory implements GameObjectFactory {
 
-  private static final WindowConfig WINDOW_CONFIG = WindowConfig.getSingleton();
+  private final GameModel gameModel;
 
-  public static void main(String[] args) {
-    TankFrame ui = new TankFrame(WINDOW_CONFIG);
-    ui.setVisible(true);
+  public DefaultGameObjectFactory(GameModel gameModel) {
+    this.gameModel = gameModel;
+  }
 
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(WINDOW_CONFIG.getRefreshMillis());
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        // repaint
-        ui.repaint();
-      }
-    }, "repaint").start();
+  @Override
+  public Tank createTank(Group group, int x, int y, TankAttributes attributes) {
+    return new DefaultTank(group, x, y, attributes, gameModel);
+  }
 
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(200);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        ui.automatic();
-      }
-    }, "automatic").start();
+  @Override
+  public Bullet createBullet(Tank owner, BulletAttributes attributes) {
+    return new DefaultBullet(owner, attributes);
   }
 
 }

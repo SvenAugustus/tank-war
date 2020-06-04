@@ -22,12 +22,10 @@
 
 package com.github.flysium.io.tank.service;
 
+import com.github.flysium.io.tank.config.GameConfig;
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.BulletAttributes;
-import com.github.flysium.io.tank.model.DefaultBullet;
-import com.github.flysium.io.tank.model.DefaultTank;
 import com.github.flysium.io.tank.model.Direction;
-import com.github.flysium.io.tank.model.DirectionRectangularShape;
 import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
@@ -35,9 +33,12 @@ import com.github.flysium.io.tank.model.Lifecycle;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
 import com.github.flysium.io.tank.service.collision.PhysicsCollisionDetectorChain;
+import com.github.flysium.io.tank.service.objectfactory.DefaultGameObjectFactory;
+import com.github.flysium.io.tank.service.objectfactory.GameObjectFactory;
+import com.github.flysium.io.tank.service.painter.GameObjectPainter;
+import com.github.flysium.io.tank.service.painter.SimpleGameObjectPainter;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
@@ -51,25 +52,33 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class GameModel {
 
+  private final GameConfig gameConfig = GameConfig.getSingleton();
   private final FinalRectangle bounds;
+
+  private final GameObjectPainter painter;
+  private final GameObjectFactory gameObjectFactory;
+  private final PhysicsCollisionDetectorChain physicsCollisionDetectorChain = new PhysicsCollisionDetectorChain();
+
   private final Tank mainTank;
   private final Map<String, GameObject> gameObjects = new ConcurrentHashMap<>();
-
-  private final PhysicsCollisionDetectorChain physicsCollisionDetectorChain = new PhysicsCollisionDetectorChain();
   private volatile boolean stop = false;
 
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
+    this.painter = new SimpleGameObjectPainter();
+    this.gameObjectFactory = new DefaultGameObjectFactory(this);
 
     // init main tank
     this.mainTank = createTank(Group.MAIN_GROUP, 50, 50);
     this.mainTank.arise();
 
     // init enemy tanks
-    createTank(Group.ENEMY_GROUP, 150, 100).arise();
-    createTank(Group.ENEMY_GROUP, 250, 100).arise();
-    createTank(Group.ENEMY_GROUP, 350, 100).arise();
-    createTank(Group.ENEMY_GROUP, 450, 100).arise();
+    int initEnemyTanksCount = gameConfig.getInitEnemyTanksCount();
+    if (initEnemyTanksCount > 0) {
+      for (int i = 0; i < initEnemyTanksCount; i++) {
+        createTank(Group.ENEMY_GROUP, 150 + 100 * i, 100).arise();
+      }
+    }
   }
 
   /**
@@ -83,83 +92,28 @@ public class GameModel {
 
     // paint
     gameObjects.forEach((id, gameObject) -> {
-      if (gameObject instanceof Tank) {
-        draw(g, (Tank) gameObject);
+      if (!gameObject.isAlive()) {
+        gameObjects.remove(gameObject.getId());
+        return;
       }
-      if (gameObject instanceof Bullet) {
-        draw(g, (Bullet) gameObject);
-      }
+      painter.paint(g, gameObject);
     });
 
     // messages.
     if (!mainTank.isAlive()) {
-      drawMessage(g, "You Lose the War !", Color.RED);
+      painter.paint(g, Color.RED, "You Lose the War !");
       stop = true;
     } else if (gameObjects.values().stream()
         .filter(gameObject -> gameObject instanceof Tank && Group.ENEMY_GROUP
             .equals(gameObject.getGroup())).noneMatch(
             Lifecycle::isAlive)) {
-      drawMessage(g, "You Win the War !", Color.BLUE);
+      painter.paint(g, Color.BLUE, "You Win the War !");
       stop = true;
     } else {
       long tanksCount = gameObjects.values().stream().filter(o -> o instanceof Tank).count();
       long bulletsCount = gameObjects.values().stream().filter(o -> o instanceof Bullet).count();
-      drawMessage(g, "Tanks: " + tanksCount + ", Bullets: " + bulletsCount, Color.BLACK);
+      painter.paint(g, Color.BLACK, "Tanks: " + tanksCount + ", Bullets: " + bulletsCount);
     }
-  }
-
-  private void draw(Graphics g, Tank tank) {
-    if (!tank.isAlive()) {
-      gameObjects.remove(tank.getId());
-      return;
-    }
-    Color c = g.getColor();
-    g.setColor(Group.MAIN_GROUP.equals(tank.getGroup()) ? Color.YELLOW : Color.GRAY);
-    // draw the tank
-    Rectangle location = tank.getLocation();
-    g.fillRect(location.x, location.y, location.width, location.height);
-    // reset Graphics's color
-    g.setColor(c);
-  }
-
-  private void draw(Graphics g, Bullet bullet) {
-    if (!bullet.isAlive()) {
-      gameObjects.remove(bullet.getId());
-      return;
-    }
-    bullet.fly();
-
-    Color c = g.getColor();
-    g.setColor(Color.RED);
-    // draw the tank
-    Rectangle location = bullet.getLocation();
-    g.fillOval(location.x, location.y, location.width, location.height);
-    // reset Graphics's color
-    g.setColor(c);
-  }
-
-  private void draw(Graphics g, Bullet bullet) {
-    if (!bullet.isAlive()) {
-      gameObjects.remove(bullet.getId());
-      return;
-    }
-    bullet.fly();
-
-    Color c = g.getColor();
-    g.setColor(Color.RED);
-    // draw the tank
-    Rectangle location = bullet.getLocation();
-    g.fillOval(location.x, location.y, location.width, location.height);
-    // reset Graphics's color
-    g.setColor(c);
-  }
-
-  private void drawMessage(Graphics g, String message, Color color) {
-    Color c = g.getColor();
-    g.setColor(color);
-    g.drawString(message, 10, 40);
-    // reset Graphics's color
-    g.setColor(c);
   }
 
   /**
@@ -194,16 +148,19 @@ public class GameModel {
     return createTank(group, x, y,
         TankAttributes.builder()
             .initialDirection(Direction.RIGHT)
-            .shape(new DirectionRectangularShape(50))
+            .shape(painter.getTankShape(group))
             .bounds(this.bounds)
-            .movingSpeed(15).build());
+            .movingSpeed(Group.MAIN_GROUP.equals(group) ?
+                gameConfig.getMainTankMovingSpeed()
+                : gameConfig.getEnemyTankMovingSpeed())
+            .build());
   }
 
   /**
    * create a tank
    */
   private Tank createTank(Group group, final int x, final int y, TankAttributes attributes) {
-    Tank tank = new DefaultTank(group, x, y, attributes, this);
+    Tank tank = gameObjectFactory.createTank(group, x, y, attributes);
     gameObjects.putIfAbsent(tank.getId(), tank);
     return tank;
   }
@@ -213,8 +170,10 @@ public class GameModel {
    */
   public Bullet createBullet(Tank tank) {
     return createBullet(tank, BulletAttributes.builder()
-        .shape(new DirectionRectangularShape(20))
-        .bulletFlyingSpeed(20)
+        .shape(painter.getBulletShape(tank.getGroup()))
+        .bulletFlyingSpeed(Group.MAIN_GROUP.equals(tank.getGroup()) ?
+            gameConfig.getMainTankBulletFlyingSpeed()
+            : gameConfig.getEnemyTankBulletFlyingSpeed())
         .build());
   }
 
@@ -222,7 +181,7 @@ public class GameModel {
    * create a bullet and make it fly
    */
   public Bullet createBullet(Tank tank, BulletAttributes attributes) {
-    Bullet bullet = new DefaultBullet(tank, attributes);
+    Bullet bullet = gameObjectFactory.createBullet(tank, attributes);
     gameObjects.putIfAbsent(bullet.getId(), bullet);
     return bullet;
   }
@@ -236,11 +195,9 @@ public class GameModel {
     }
     gameObjects.values().stream()
         .filter(gameObject -> gameObject instanceof Tank
+            && gameObject.isAlive()
             && Group.ENEMY_GROUP.equals(gameObject.getGroup()))
         .forEach(gameObject -> {
-          if (!gameObject.isAlive()) {
-            return;
-          }
           Tank tank = (Tank) gameObject;
           Random random = new Random();
           int probability = random.nextInt(100);

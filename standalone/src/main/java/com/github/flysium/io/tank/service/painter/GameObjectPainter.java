@@ -20,48 +20,52 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank;
+package com.github.flysium.io.tank.service.painter;
 
-import com.github.flysium.io.tank.config.WindowConfig;
-import com.github.flysium.io.tank.view.TankFrame;
-import java.util.concurrent.TimeUnit;
+import com.github.flysium.io.tank.model.DirectionRectangularShape;
+import com.github.flysium.io.tank.model.GameObject;
+import com.github.flysium.io.tank.model.Group;
+import java.awt.Color;
+import java.awt.Graphics;
 
 /**
- * Main
+ * factory which is used to paint game objects.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Main {
+public interface GameObjectPainter {
 
-  private static final WindowConfig WINDOW_CONFIG = WindowConfig.getSingleton();
+  /**
+   * paint text message
+   *
+   * @param g       <code>Graphics</code>
+   * @param color   <code>Color</code>
+   * @param message a text message
+   */
+  void paint(Graphics g, Color color, String message);
 
-  public static void main(String[] args) {
-    TankFrame ui = new TankFrame(WINDOW_CONFIG);
-    ui.setVisible(true);
+  /**
+   * paint GameObject
+   *
+   * @param g          <code>Graphics</code>
+   * @param gameObject a <code>GameObject</code>
+   */
+  void paint(Graphics g, GameObject gameObject);
 
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(WINDOW_CONFIG.getRefreshMillis());
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        // repaint
-        ui.repaint();
-      }
-    }, "repaint").start();
+  /**
+   * Get Tank Shape
+   *
+   * @param group Group
+   * @return <code>DirectionRectangularShape</code>
+   */
+  DirectionRectangularShape getTankShape(Group group);
 
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(200);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        ui.automatic();
-      }
-    }, "automatic").start();
-  }
-
+  /**
+   * Get Bullet Shape
+   *
+   * @param group Group
+   * @return <code>DirectionRectangularShape</code>
+   */
+  DirectionRectangularShape getBulletShape(Group group);
 }

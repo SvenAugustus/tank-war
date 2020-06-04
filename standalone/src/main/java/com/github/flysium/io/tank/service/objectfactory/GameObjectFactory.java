@@ -20,48 +20,40 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank;
+package com.github.flysium.io.tank.service.objectfactory;
 
-import com.github.flysium.io.tank.config.WindowConfig;
-import com.github.flysium.io.tank.view.TankFrame;
-import java.util.concurrent.TimeUnit;
+import com.github.flysium.io.tank.model.Bullet;
+import com.github.flysium.io.tank.model.BulletAttributes;
+import com.github.flysium.io.tank.model.Group;
+import com.github.flysium.io.tank.model.Tank;
+import com.github.flysium.io.tank.model.TankAttributes;
 
 /**
- * Main
+ * factory which is used to create game objects.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Main {
+public interface GameObjectFactory {
 
-  private static final WindowConfig WINDOW_CONFIG = WindowConfig.getSingleton();
+  /**
+   * create Tank
+   *
+   * @param group      tank group
+   * @param x          the X coordinate of the initial location
+   * @param y          the Y coordinate of the initial location
+   * @param attributes attributes of Tank
+   * @return Tank instance
+   */
+  Tank createTank(Group group, final int x, final int y, TankAttributes attributes);
 
-  public static void main(String[] args) {
-    TankFrame ui = new TankFrame(WINDOW_CONFIG);
-    ui.setVisible(true);
-
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(WINDOW_CONFIG.getRefreshMillis());
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        // repaint
-        ui.repaint();
-      }
-    }, "repaint").start();
-
-    new Thread(() -> {
-      while (true) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(200);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        ui.automatic();
-      }
-    }, "automatic").start();
-  }
+  /**
+   * create bullet
+   *
+   * @param owner      tank
+   * @param attributes attributes of bullet
+   * @return Bullet instance
+   */
+  Bullet createBullet(Tank owner, BulletAttributes attributes);
 
 }
