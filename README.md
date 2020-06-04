@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 #### Description
-**The game of Tank War based on Java Swing which you can learn it by staring Java SE.**
+**The game of tank war based on Java Swing which you can learn stating Java SE, and Simple Netty Server. **
 
 -------------------------- 
 #### Dependency
