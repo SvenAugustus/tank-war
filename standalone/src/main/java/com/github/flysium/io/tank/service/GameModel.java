@@ -22,15 +22,21 @@
 
 package com.github.flysium.io.tank.service;
 
+import com.github.flysium.io.tank.model.Bullet;
+import com.github.flysium.io.tank.model.BulletAttributes;
+import com.github.flysium.io.tank.model.DefaultBullet;
 import com.github.flysium.io.tank.model.DefaultTank;
 import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.DirectionRectangularShape;
 import com.github.flysium.io.tank.model.FinalRectangle;
+import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Game Model with manage all <code>GameObject</code>
@@ -42,15 +48,11 @@ public class GameModel {
 
   private final FinalRectangle bounds;
   private final Tank mainTank;
+  private final Map<String, GameObject> gameObjects = new ConcurrentHashMap<>();
 
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
-    this.mainTank = new DefaultTank(50, 50,
-        TankAttributes.builder()
-            .initialDirection(Direction.RIGHT)
-            .shape(new DirectionRectangularShape(50))
-            .bounds(this.bounds)
-            .movingSpeed(15).build());
+    this.mainTank = createTank(50, 50);
     this.mainTank.arise();
   }
 
@@ -60,11 +62,19 @@ public class GameModel {
    * @param g Graphics
    */
   public void paint(Graphics g) {
-    drawTank(g, this.mainTank);
+    gameObjects.forEach((id, gameObject) -> {
+      if (gameObject instanceof Tank) {
+        draw(g, (Tank) gameObject);
+      }
+      if (gameObject instanceof Bullet) {
+        draw(g, (Bullet) gameObject);
+      }
+    });
   }
 
-  private void drawTank(Graphics g, Tank tank) {
+  private void draw(Graphics g, Tank tank) {
     if (!tank.isAlive()) {
+      gameObjects.remove(tank.getId());
       return;
     }
     Color c = g.getColor();
@@ -76,6 +86,22 @@ public class GameModel {
     g.setColor(c);
   }
 
+  private void draw(Graphics g, Bullet bullet) {
+    if (!bullet.isAlive()) {
+      gameObjects.remove(bullet.getId());
+      return;
+    }
+    bullet.fly();
+
+    Color c = g.getColor();
+    g.setColor(Color.RED);
+    // draw the tank
+    Rectangle location = bullet.getLocation();
+    g.fillOval(location.x, location.y, location.width, location.height);
+    // reset Graphics's color
+    g.setColor(c);
+  }
+
   /**
    * Get the main <code>Tank</code>
    *
@@ -83,6 +109,46 @@ public class GameModel {
    */
   public Tank getMainTank() {
     return mainTank;
+  }
+
+  /**
+   * create a tank
+   */
+  private Tank createTank(final int x, final int y) {
+    return createTank(x, y,
+        TankAttributes.builder()
+            .initialDirection(Direction.RIGHT)
+            .shape(new DirectionRectangularShape(50))
+            .bounds(this.bounds)
+            .movingSpeed(15).build());
+  }
+
+  /**
+   * create a tank
+   */
+  private Tank createTank(final int x, final int y, TankAttributes attributes) {
+    Tank tank = new DefaultTank(x, y, attributes, this);
+    gameObjects.putIfAbsent(tank.getId(), tank);
+    return tank;
+  }
+
+  /**
+   * create a bullet and make it fly
+   */
+  public Bullet createBullet(Tank tank) {
+    return createBullet(tank, BulletAttributes.builder()
+        .shape(new DirectionRectangularShape(20))
+        .bulletFlyingSpeed(20)
+        .build());
+  }
+
+  /**
+   * create a bullet and make it fly
+   */
+  public Bullet createBullet(Tank tank, BulletAttributes attributes) {
+    Bullet bullet = new DefaultBullet(tank, attributes);
+    gameObjects.putIfAbsent(bullet.getId(), bullet);
+    return bullet;
   }
 
 }

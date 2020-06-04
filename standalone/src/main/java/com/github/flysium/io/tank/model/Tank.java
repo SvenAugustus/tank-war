@@ -22,6 +22,8 @@
 
 package com.github.flysium.io.tank.model;
 
+import com.github.flysium.io.tank.service.GameModel;
+
 /**
  * abstract Tank.
  *
@@ -30,10 +32,23 @@ package com.github.flysium.io.tank.model;
  */
 public abstract class Tank extends BaseMovable implements Movable, Lifecycle {
 
-  public Tank(final int x, final int y, TankAttributes attributes) {
+  private final GameModel gameModel;
+
+  public Tank(final int x, final int y, TankAttributes attributes, final GameModel gameModel) {
     super(new DirectionRectangle(x, y,
             attributes.getInitialDirection(), attributes.getShape(), attributes.getBounds()),
         attributes.getMovingSpeed());
+    this.gameModel = gameModel;
+  }
+
+  /**
+   * fire out
+   */
+  public void fire() {
+    Bullet bullet = gameModel.createBullet(this);
+    if (bullet != null) {
+      bullet.arise();
+    }
   }
 
 }

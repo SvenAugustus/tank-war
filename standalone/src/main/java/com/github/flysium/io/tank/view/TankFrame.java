@@ -111,6 +111,10 @@ public class TankFrame extends JFrame {
           // Key Down / Key S: Move Down
           gameService.moveMainTankByDirection(Direction.DOWN);
           break;
+        case KeyEvent.VK_CONTROL:
+          // Key Down / Key S: Move Down
+          gameService.fireMainTank();
+          break;
         default:
           break;
       }

@@ -22,6 +22,8 @@
 
 package com.github.flysium.io.tank.model;
 
+import com.github.flysium.io.tank.service.GameModel;
+
 /**
  * Default Tank.
  *
@@ -30,8 +32,8 @@ package com.github.flysium.io.tank.model;
  */
 public class DefaultTank extends Tank {
 
-  public DefaultTank(int x, int y, TankAttributes attributes) {
-    super(x, y, attributes);
+  public DefaultTank(int x, int y, TankAttributes attributes,
+      GameModel gameModel) {
+    super(x, y, attributes, gameModel);
   }
-
 }

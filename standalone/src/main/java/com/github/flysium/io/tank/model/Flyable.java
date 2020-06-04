@@ -23,43 +23,30 @@
 package com.github.flysium.io.tank.model;
 
 /**
- * abstract <code>Movable</code>
+ * Flyable
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class BaseMovable extends GameObject implements Movable, Lifecycle {
+public interface Flyable {
 
-  // speed.
-  protected final int speed;
+  /**
+   * Get the flying speed.
+   *
+   * @return return zero if can not flying, otherwise return the flying speed.
+   */
+  int getSpeed();
 
-  public BaseMovable(DirectionRectangle location, int speed) {
-    super(location);
-    this.speed = speed;
-  }
+  /**
+   * Get the current   <code>Direction</code>
+   *
+   * @return current <code>Direction</code>
+   */
+  Direction getDirection();
 
-  protected DirectionRectangle getDirectionRectangle() {
-    return (DirectionRectangle) this.location;
-  }
-
-  @Override
-  public int getSpeed() {
-    return speed;
-  }
-
-  @Override
-  public Direction getDirection() {
-    return this.getDirectionRectangle().getDirection();
-  }
-
-  @Override
-  public void changeDirection(Direction direction) {
-    this.getDirectionRectangle().changeDirection(direction);
-  }
-
-  @Override
-  public void moveOn() {
-    this.getDirectionRectangle().refresh(speed);
-  }
+  /**
+   * flying this <code>DirectionRectangle</code> location.
+   */
+  void fly();
 
 }

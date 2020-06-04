@@ -23,43 +23,14 @@
 package com.github.flysium.io.tank.model;
 
 /**
- * abstract <code>Movable</code>
+ * Default Bullet.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class BaseMovable extends GameObject implements Movable, Lifecycle {
+public class DefaultBullet extends Bullet {
 
-  // speed.
-  protected final int speed;
-
-  public BaseMovable(DirectionRectangle location, int speed) {
-    super(location);
-    this.speed = speed;
+  public DefaultBullet(Tank owner, BulletAttributes attributes) {
+    super(owner, attributes);
   }
-
-  protected DirectionRectangle getDirectionRectangle() {
-    return (DirectionRectangle) this.location;
-  }
-
-  @Override
-  public int getSpeed() {
-    return speed;
-  }
-
-  @Override
-  public Direction getDirection() {
-    return this.getDirectionRectangle().getDirection();
-  }
-
-  @Override
-  public void changeDirection(Direction direction) {
-    this.getDirectionRectangle().changeDirection(direction);
-  }
-
-  @Override
-  public void moveOn() {
-    this.getDirectionRectangle().refresh(speed);
-  }
-
 }

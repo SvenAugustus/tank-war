@@ -47,4 +47,8 @@ public interface GameService {
    */
   void moveMainTankByDirection(Direction direction);
 
+  /**
+   * Fire the main <code>Tank</code>
+   */
+  void fireMainTank();
 }

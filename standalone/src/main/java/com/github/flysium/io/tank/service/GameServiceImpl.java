@@ -53,4 +53,9 @@ public class GameServiceImpl implements GameService {
     mainTank.moveOn();
   }
 
+  @Override
+  public void fireMainTank() {
+    gameModel.getMainTank().fire();
+  }
+
 }
