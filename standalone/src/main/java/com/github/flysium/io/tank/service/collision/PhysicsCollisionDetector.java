@@ -20,61 +20,26 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.model;
+package com.github.flysium.io.tank.service.collision;
 
-import java.util.Objects;
-import java.util.UUID;
+import com.github.flysium.io.tank.model.GameObject;
 
 /**
- * Group, same group is allies
+ * Physics Collision Detector
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Group {
-
-  // Group ID
-  private final String groupId = UUID.randomUUID().toString();
-
-  // Group Code
-  private final String groupCode;
-
-  public Group(String groupCode) {
-    this.groupCode = groupCode;
-  }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public String getGroupCode() {
-    return groupCode;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Group group = (Group) o;
-    return Objects.equals(groupId, group.groupId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(groupId);
-  }
+public interface PhysicsCollisionDetector {
 
   /**
-   * Main Group
+   * detect weather there is any physics collisions between <code>GameObject</code> a and
+   * <code>GameObject</code> b, and it's true, process to handle the physics collisions.
+   *
+   * @param a <code>GameObject</code> a
+   * @param b <code>GameObject</code> b
+   * @return return true if there is any physics collisions, otherwise return false
    */
-  public static final Group MAIN_GROUP = new Group("main");
-  /**
-   * Enemy Group
-   */
-  public static final Group ENEMY_GROUP = new Group("enemy");
+  boolean detect(GameObject a, GameObject b);
 
 }

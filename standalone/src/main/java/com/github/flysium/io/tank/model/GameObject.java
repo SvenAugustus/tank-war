@@ -23,6 +23,7 @@
 package com.github.flysium.io.tank.model;
 
 import java.awt.Rectangle;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -101,4 +102,20 @@ public abstract class GameObject implements Lifecycle {
     return alive;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    GameObject that = (GameObject) o;
+    return id.equals(that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

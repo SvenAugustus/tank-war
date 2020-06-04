@@ -20,61 +20,36 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.model;
+package com.github.flysium.io.tank.service.collision;
 
-import java.util.Objects;
-import java.util.UUID;
+import com.github.flysium.io.tank.model.GameObject;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Group, same group is allies
+ * <code>PhysicsCollisionDetector</code> Chain.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Group {
+public class PhysicsCollisionDetectorChain implements PhysicsCollisionDetector {
 
-  // Group ID
-  private final String groupId = UUID.randomUUID().toString();
+  private final List<PhysicsCollisionDetector> detectors = new CopyOnWriteArrayList<>();
 
-  // Group Code
-  private final String groupCode;
-
-  public Group(String groupCode) {
-    this.groupCode = groupCode;
+  public PhysicsCollisionDetectorChain() {
+    register(new BulletTankPhysicsCollisionDetector());
   }
 
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public String getGroupCode() {
-    return groupCode;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
+  public boolean register(PhysicsCollisionDetector physicsCollisionDetector) {
+    if (detectors.contains(physicsCollisionDetector)) {
       return false;
     }
-    Group group = (Group) o;
-    return Objects.equals(groupId, group.groupId);
+    return detectors.add(physicsCollisionDetector);
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(groupId);
+  public boolean detect(GameObject a, GameObject b) {
+    return detectors.stream().anyMatch(detector -> detector.detect(a, b));
   }
-
-  /**
-   * Main Group
-   */
-  public static final Group MAIN_GROUP = new Group("main");
-  /**
-   * Enemy Group
-   */
-  public static final Group ENEMY_GROUP = new Group("enemy");
 
 }

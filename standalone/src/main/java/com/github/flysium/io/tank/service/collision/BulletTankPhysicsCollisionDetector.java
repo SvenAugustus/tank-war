@@ -20,61 +20,44 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.model;
+package com.github.flysium.io.tank.service.collision;
 
-import java.util.Objects;
-import java.util.UUID;
+import com.github.flysium.io.tank.model.Bullet;
+import com.github.flysium.io.tank.model.GameObject;
+import com.github.flysium.io.tank.model.Tank;
 
 /**
- * Group, same group is allies
+ * <code>PhysicsCollisionDetector</code> between <code>Bullet</code> and <code>Tank</code>
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class Group {
-
-  // Group ID
-  private final String groupId = UUID.randomUUID().toString();
-
-  // Group Code
-  private final String groupCode;
-
-  public Group(String groupCode) {
-    this.groupCode = groupCode;
-  }
-
-  public String getGroupId() {
-    return groupId;
-  }
-
-  public String getGroupCode() {
-    return groupCode;
-  }
+public class BulletTankPhysicsCollisionDetector implements PhysicsCollisionDetector {
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
+  public boolean detect(GameObject a, GameObject b) {
+    if (a == b) {
       return false;
     }
-    Group group = (Group) o;
-    return Objects.equals(groupId, group.groupId);
+    if (a instanceof Bullet && b instanceof Tank) {
+      Bullet bullet = (Bullet) a;
+      Tank tank = (Tank) b;
+      if (bullet.isAlive() && tank.isAlive()
+          // not my bullet
+          && !tank.equals(bullet.getOwner())
+          // not my allies's bullet
+          && !tank.getGroup().equals(bullet.getOwner().getGroup())
+          // physics collision occurs when they intersects is true
+          && tank.getLocation().intersects(bullet.getLocation())
+      ) {
+        // handle physics collision
+        tank.die();
+        bullet.die();
+      }
+    } else if (a instanceof Tank && b instanceof Bullet) {
+      return detect(b, a);
+    }
+    return false;
   }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(groupId);
-  }
-
-  /**
-   * Main Group
-   */
-  public static final Group MAIN_GROUP = new Group("main");
-  /**
-   * Enemy Group
-   */
-  public static final Group ENEMY_GROUP = new Group("enemy");
 
 }

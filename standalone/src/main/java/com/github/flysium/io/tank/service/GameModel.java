@@ -33,9 +33,11 @@ import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
+import com.github.flysium.io.tank.service.collision.PhysicsCollisionDetectorChain;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,6 +52,8 @@ public class GameModel {
   private final FinalRectangle bounds;
   private final Tank mainTank;
   private final Map<String, GameObject> gameObjects = new ConcurrentHashMap<>();
+
+  private final PhysicsCollisionDetectorChain physicsCollisionDetectorChain = new PhysicsCollisionDetectorChain();
 
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
@@ -71,6 +75,10 @@ public class GameModel {
    * @param g Graphics
    */
   public void paint(Graphics g) {
+    // detect and handle any physics collisions
+    physicsCollisionDetect(gameObjects.values(), gameObjects.values());
+
+    // paint
     gameObjects.forEach((id, gameObject) -> {
       if (gameObject instanceof Tank) {
         draw(g, (Tank) gameObject);
@@ -80,6 +88,7 @@ public class GameModel {
       }
     });
 
+    // messages.
     Color c = g.getColor();
     g.setColor(Color.BLACK);
     long tanksCount = gameObjects.values().stream().filter(o -> o instanceof Tank).count();
@@ -142,6 +151,22 @@ public class GameModel {
    */
   public Tank getMainTank() {
     return mainTank;
+  }
+
+  /**
+   * detect and handle any physics collisions
+   */
+  private void physicsCollisionDetect(Collection<? extends GameObject> as,
+      Collection<? extends GameObject> bs) {
+    for (GameObject a : as) {
+      for (GameObject b : bs) {
+        if (a != b) {
+          if (physicsCollisionDetectorChain.detect(a, b)) {
+            break;
+          }
+        }
+      }
+    }
   }
 
   /**
