@@ -42,6 +42,7 @@ public final class PropertiesUtils {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    System.out.println("--------->load properties: " + PROPERTIES);
   }
 
   public static String getProperty(String key) {

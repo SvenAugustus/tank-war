@@ -22,36 +22,18 @@
 
 package com.github.flysium.io.tank.model;
 
-import com.github.flysium.io.tank.service.fire.FireStrategy;
-
 /**
- * abstract Tank.
+ * Danger Object
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class Tank extends BaseMovable implements Movable, Lifecycle {
-
-  private final FireStrategy fireStrategy;
-
-  public Tank(Group group, final int x, final int y, TankAttributes attributes) {
-    super(group, new DirectionRectangle(x, y,
-            attributes.getInitialDirection(), attributes.getShape(),
-            attributes.getBounds()),
-        attributes.getInitialHealth(), attributes.getMovingSpeed());
-    this.fireStrategy = attributes.getFireStrategy();
-  }
+public interface Danger {
 
   /**
-   * fire out
+   * Get the damage Value
+   *
+   * @return damage Value
    */
-  public void fire() {
-    if (!isAlive()) {
-      return;
-    }
-    if (fireStrategy != null) {
-      fireStrategy.fire(this);
-    }
-  }
-
+  int getDamageValue();
 }

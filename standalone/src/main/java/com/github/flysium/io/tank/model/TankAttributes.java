@@ -38,6 +38,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class TankAttributes {
 
+  private int initialHealth;
   private Direction initialDirection;
   private DirectionRectangularShape shape;
   private FinalRectangle bounds;

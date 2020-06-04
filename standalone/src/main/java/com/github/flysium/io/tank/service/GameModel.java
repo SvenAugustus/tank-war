@@ -152,6 +152,9 @@ public class GameModel {
   private Tank createTank(Group group, final int x, final int y) {
     return createTank(group, x, y,
         TankAttributes.builder()
+            .initialHealth(Group.MAIN_GROUP.equals(group) ?
+                gameConfig.getMainTankInitialHealth()
+                : gameConfig.getEnemyTankInitialHealth())
             .initialDirection(Direction.RIGHT)
             .shape(painter.getTankShape(group))
             .bounds(this.bounds)
@@ -212,6 +215,9 @@ public class GameModel {
             .bulletFlyingSpeed(Group.MAIN_GROUP.equals(tank.getGroup()) ?
                 gameConfig.getMainTankBulletFlyingSpeed()
                 : gameConfig.getEnemyTankBulletFlyingSpeed())
+            .damageValue(Group.MAIN_GROUP.equals(tank.getGroup()) ?
+                gameConfig.getMainTankBulletDamage() :
+                gameConfig.getEnemyTankBulletDamage())
             .build()));
     gameObjects.putIfAbsent(bullet.getId(), bullet);
     return bullet;

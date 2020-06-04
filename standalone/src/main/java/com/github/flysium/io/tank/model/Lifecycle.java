@@ -38,7 +38,22 @@ public interface Lifecycle {
   /**
    * Set this object is dead
    */
+  @Deprecated
   void die();
+
+  /**
+   * Get it's health value.
+   *
+   * @return health value.
+   */
+  int getHealthValue();
+
+  /**
+   * damage by specified value
+   *
+   * @param damage specified value
+   */
+  void damage(int damage);
 
   /**
    * whether it's alive or dead

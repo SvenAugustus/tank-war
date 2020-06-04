@@ -67,6 +67,11 @@ public class SimpleGameObjectPainter implements GameObjectPainter {
     // draw the tank
     Rectangle location = tank.getLocation();
     g.fillRect(location.x, location.y, location.width, location.height);
+
+    g.setColor(Color.GREEN);
+    g.drawString("" + tank.getHealthValue(), location.x + location.width * 4 / 10,
+        location.y + location.height / 2);
+
     // reset Graphics's color
     g.setColor(c);
   }

@@ -40,6 +40,7 @@ public class BulletAttributes {
   private Direction initialDirection;
   private DirectionRectangularShape shape;
   private Integer bulletFlyingSpeed;
+  private Integer damageValue;
 
   /**
    * load default <code>BulletAttributes</code>
@@ -59,6 +60,9 @@ public class BulletAttributes {
     }
     if (bulletFlyingSpeed == null) {
       bulletFlyingSpeed = attributes.getBulletFlyingSpeed();
+    }
+    if (damageValue == null) {
+      damageValue = attributes.getDamageValue();
     }
     return this;
   }

@@ -25,6 +25,7 @@ package com.github.flysium.io.tank.model;
 import java.awt.Rectangle;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 2D Game Object
@@ -46,9 +47,13 @@ public abstract class GameObject implements Lifecycle {
   // alive flag
   protected boolean alive = false;
 
-  public GameObject(Group group, PositionRectangle location) {
+  // health
+  private final AtomicInteger healthValue;
+
+  public GameObject(Group group, PositionRectangle location, int initialHealth) {
     this.group = group;
     this.location = location;
+    this.healthValue = new AtomicInteger(initialHealth);
   }
 
   /**
@@ -98,8 +103,18 @@ public abstract class GameObject implements Lifecycle {
   }
 
   @Override
+  public int getHealthValue() {
+    return healthValue.intValue();
+  }
+
+  @Override
+  public void damage(int damage) {
+    healthValue.addAndGet(-damage);
+  }
+
+  @Override
   public boolean isAlive() {
-    return alive;
+    return alive && healthValue.get() > 0;
   }
 
   @Override

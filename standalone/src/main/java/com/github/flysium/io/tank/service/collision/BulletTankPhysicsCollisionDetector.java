@@ -51,7 +51,8 @@ public class BulletTankPhysicsCollisionDetector implements PhysicsCollisionDetec
           && tank.getLocation().intersects(bullet.getLocation())
       ) {
         // handle physics collision
-        tank.die();
+//        tank.die();
+        tank.damage(bullet.getDamageValue());
         bullet.die();
       }
     } else if (a instanceof Tank && b instanceof Bullet) {

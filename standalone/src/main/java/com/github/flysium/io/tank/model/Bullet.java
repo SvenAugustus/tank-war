@@ -30,15 +30,19 @@ import java.awt.Rectangle;
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class Bullet extends BaseFlyable implements Flyable, Lifecycle {
+public abstract class Bullet extends BaseFlyable implements Flyable, Lifecycle, Danger {
 
   private final Tank owner;
+
+  // damage value
+  private final int damageValue;
 
   public Bullet(final Tank owner, BulletAttributes attributes) {
     super(owner.getGroup(),
         createDirectionRectangle(owner, attributes.getInitialDirection(), attributes.getShape()),
-        attributes.getBulletFlyingSpeed());
+        1, attributes.getBulletFlyingSpeed());
     this.owner = owner;
+    this.damageValue = attributes.getDamageValue();
   }
 
   /**
@@ -99,4 +103,8 @@ public abstract class Bullet extends BaseFlyable implements Flyable, Lifecycle {
     return super.isAlive() && !this.getDirectionRectangle().isOutbound();
   }
 
+  @Override
+  public int getDamageValue() {
+    return damageValue;
+  }
 }
