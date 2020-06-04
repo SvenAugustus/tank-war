@@ -23,6 +23,7 @@
 package com.github.flysium.io.tank.model;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 /**
  * Rectangle according by <code>Direction</code> .
@@ -30,7 +31,9 @@ import java.awt.Rectangle;
  * @author Sven Augustus
  * @version 1.0
  */
-public class DirectionRectangle implements PositionRectangle {
+public class DirectionRectangle implements PositionRectangle, Serializable {
+
+  private static final long serialVersionUID = -6824568360919586510L;
 
   // location
   private final Rectangle location;

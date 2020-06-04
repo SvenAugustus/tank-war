@@ -22,6 +22,7 @@
 
 package com.github.flysium.io.tank.service;
 
+import com.github.flysium.io.tank.Main;
 import com.github.flysium.io.tank.config.AutomaticConfig;
 import com.github.flysium.io.tank.config.GameConfig;
 import com.github.flysium.io.tank.config.ResourceManager;
@@ -48,6 +49,12 @@ import com.github.flysium.io.tank.service.painter.GameObjectPainter;
 import com.github.flysium.io.tank.service.painter.SimpleGameObjectPainter;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
@@ -68,11 +75,19 @@ public class GameModel {
   private final GameObjectFactory gameObjectFactory;
   private final PhysicsCollisionDetectorChain physicsCollisionDetectorChain = new PhysicsCollisionDetectorChain();
 
-  private final Tank mainTank;
+  private Tank mainTank;
   private final Map<String, GameObject> gameObjects = new ConcurrentHashMap<>();
-  private volatile boolean stop = false;
+  private transient volatile boolean stop = false;
 
-  public GameModel(final FinalRectangle bounds) {
+  public static GameModel getSingleton() {
+    return Holder.INSTANCE;
+  }
+
+  private GameModel() {
+    this(Main.FINAL_RECTANGLE);
+  }
+
+  private GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
     this.painter = newGameObjectPainter(gameConfig.getPainter());
     this.gameObjectFactory = new DefaultGameObjectFactory();
@@ -220,11 +235,11 @@ public class GameModel {
   private FireStrategy newFireStrategy(String clazzName) {
     try {
       Class<FireStrategy> clazz = (Class<FireStrategy>) Class.forName(clazzName);
-      return clazz.getConstructor(GameModel.class).newInstance(this);
-    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+      return clazz.newInstance();
+    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
       e.printStackTrace();
     }
-    return new DefaultFireStrategy(this);
+    return new DefaultFireStrategy();
   }
 
   /**
@@ -300,4 +315,40 @@ public class GameModel {
     return new RandomAutomaticStrategy();
   }
 
+  private final File f = new File(System.getProperty("user.home") + "/tankWar.sav");
+
+  /**
+   * Load to memory
+   */
+  @SuppressWarnings("unchecked")
+  public void load() {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
+      this.mainTank = (Tank) ois.readObject();
+      Map<String, GameObject> gameObjects = (Map<String, GameObject>) ois.readObject();
+      this.gameObjects.clear();
+      this.gameObjects.putAll(gameObjects);
+      System.out.println("--------->Game Loaded:" + f.getAbsolutePath());
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Save to disk
+   */
+  public void save() {
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
+      oos.writeObject(mainTank);
+      oos.writeObject(gameObjects);
+      System.out.println("--------->Game Saved:" + f.getAbsolutePath());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static class Holder {
+
+    // singleton instance.
+    static final GameModel INSTANCE = new GameModel();
+  }
 }

@@ -24,6 +24,7 @@ package com.github.flysium.io.tank;
 
 import com.github.flysium.io.tank.config.ResourceManager;
 import com.github.flysium.io.tank.config.WindowConfig;
+import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.view.TankFrame;
 import java.util.concurrent.TimeUnit;
 
@@ -36,9 +37,11 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
   private static final WindowConfig WINDOW_CONFIG = WindowConfig.getSingleton();
+  public static final FinalRectangle FINAL_RECTANGLE = new FinalRectangle(2, 25,
+      WINDOW_CONFIG.getWindowWidth() - 4, WINDOW_CONFIG.getWindowHeight() - 29);
 
   public static void main(String[] args) {
-    TankFrame ui = new TankFrame(WINDOW_CONFIG);
+    TankFrame ui = new TankFrame();
     ui.setVisible(true);
 
     new Thread(() -> {

@@ -24,7 +24,6 @@ package com.github.flysium.io.tank.service;
 
 import com.github.flysium.io.tank.config.ResourceManager;
 import com.github.flysium.io.tank.model.Direction;
-import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.Tank;
 import java.awt.Graphics;
 
@@ -36,11 +35,7 @@ import java.awt.Graphics;
  */
 public class GameServiceImpl implements GameService {
 
-  private final GameModel gameModel;
-
-  public GameServiceImpl(final FinalRectangle bounds) {
-    gameModel = new GameModel(bounds);
-  }
+  private final GameModel gameModel = GameModel.getSingleton();
 
   @Override
   public void paint(Graphics g) {
@@ -64,6 +59,16 @@ public class GameServiceImpl implements GameService {
   @Override
   public void automatic() {
     gameModel.automatic();
+  }
+
+  @Override
+  public void save() {
+    gameModel.save();
+  }
+
+  @Override
+  public void load() {
+    gameModel.load();
   }
 
 }

@@ -57,4 +57,13 @@ public interface GameService {
    */
   void automatic();
 
+  /**
+   * Save
+   */
+  void save();
+
+  /**
+   * Load
+   */
+  void load();
 }

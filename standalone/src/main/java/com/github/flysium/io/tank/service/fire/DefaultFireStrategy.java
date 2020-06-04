@@ -27,6 +27,7 @@ import com.github.flysium.io.tank.model.BulletAttributes;
 import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.service.GameModel;
+import java.io.Serializable;
 
 /**
  * Default Fire Strategy.
@@ -34,13 +35,9 @@ import com.github.flysium.io.tank.service.GameModel;
  * @author Sven Augustus
  * @version 1.0
  */
-public class DefaultFireStrategy implements FireStrategy {
+public class DefaultFireStrategy implements FireStrategy, Serializable {
 
-  protected final GameModel gameModel;
-
-  public DefaultFireStrategy(GameModel gameModel) {
-    this.gameModel = gameModel;
-  }
+  private static final long serialVersionUID = -6808726919829545073L;
 
   @Override
   public void fire(Tank tank) {
@@ -48,7 +45,7 @@ public class DefaultFireStrategy implements FireStrategy {
   }
 
   protected void fireOut(Tank tank, Direction direction) {
-    Bullet bullet = gameModel.createBullet(tank, BulletAttributes.builder()
+    Bullet bullet = GameModel.getSingleton().createBullet(tank, BulletAttributes.builder()
         .initialDirection(direction)
         .build());
     if (bullet != null) {

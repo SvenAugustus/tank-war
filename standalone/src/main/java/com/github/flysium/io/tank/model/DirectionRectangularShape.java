@@ -23,6 +23,7 @@
 package com.github.flysium.io.tank.model;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,9 @@ import java.util.Map;
  * @author Sven Augustus
  * @version 1.0
  */
-public class DirectionRectangularShape {
+public class DirectionRectangularShape implements Serializable {
+
+  private static final long serialVersionUID = -7894602473357846166L;
 
   private final Map<Direction, Integer> widthShape = new HashMap<>(8);
   private final Map<Direction, Integer> heightShape = new HashMap<>(8);

@@ -23,6 +23,7 @@
 package com.github.flysium.io.tank.model;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,7 +34,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Sven Augustus
  * @version 1.0
  */
-public abstract class GameObject implements Lifecycle {
+public abstract class GameObject implements Lifecycle, Serializable {
+
+  private static final long serialVersionUID = 7989536251286357892L;
 
   // ID
   protected final String id = UUID.randomUUID().toString();

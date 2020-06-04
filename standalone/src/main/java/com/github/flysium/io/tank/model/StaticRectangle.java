@@ -23,6 +23,7 @@
 package com.github.flysium.io.tank.model;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 /**
  * Static <code>PositionRectangle</code>
@@ -30,7 +31,9 @@ import java.awt.Rectangle;
  * @author Sven Augustus
  * @version 1.0
  */
-public class StaticRectangle implements PositionRectangle {
+public class StaticRectangle implements PositionRectangle, Serializable {
+
+  private static final long serialVersionUID = -5933650873237545378L;
 
   public final int x;
   public final int y;

@@ -24,7 +24,6 @@ package com.github.flysium.io.tank.service.fire;
 
 import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.Tank;
-import com.github.flysium.io.tank.service.GameModel;
 
 /**
  * Four Direction fore together
@@ -33,10 +32,6 @@ import com.github.flysium.io.tank.service.GameModel;
  * @version 1.0
  */
 public class FourDirectionFireStrategy extends DefaultFireStrategy implements FireStrategy {
-
-  public FourDirectionFireStrategy(GameModel gameModel) {
-    super(gameModel);
-  }
 
   @Override
   public void fire(Tank tank) {

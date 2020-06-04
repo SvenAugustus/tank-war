@@ -22,9 +22,8 @@
 
 package com.github.flysium.io.tank.view;
 
-import com.github.flysium.io.tank.config.WindowConfig;
+import com.github.flysium.io.tank.Main;
 import com.github.flysium.io.tank.model.Direction;
-import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.service.GameService;
 import com.github.flysium.io.tank.service.GameServiceImpl;
 import java.awt.Color;
@@ -45,16 +44,11 @@ import javax.swing.JFrame;
  */
 public class TankFrame extends JFrame {
 
-  private final int WINDOW_WIDTH;
-  private final int WINDOW_HEIGHT;
-  private final GameService gameService;
+  private final int WINDOW_WIDTH = Main.FINAL_RECTANGLE.width;
+  private final int WINDOW_HEIGHT = Main.FINAL_RECTANGLE.height;
+  private final GameService gameService = new GameServiceImpl();
 
-  public TankFrame(WindowConfig windowConfig) throws HeadlessException {
-    this.WINDOW_WIDTH = windowConfig.getWindowWidth();
-    this.WINDOW_HEIGHT = windowConfig.getWindowHeight();
-    this.gameService = new GameServiceImpl(new FinalRectangle(2, 25,
-        WINDOW_WIDTH - 4, WINDOW_HEIGHT - 29));
-
+  public TankFrame() throws HeadlessException {
     this.setTitle("The War of Tank");
     this.setBounds(200, 200, WINDOW_WIDTH, WINDOW_HEIGHT);
     this.setResizable(false);
@@ -123,6 +117,14 @@ public class TankFrame extends JFrame {
         case KeyEvent.VK_CONTROL:
           // Key Down / Key S: Move Down
           gameService.fireMainTank();
+          break;
+        case KeyEvent.VK_F1:
+          // Key F1: Save
+          gameService.save();
+          break;
+        case KeyEvent.VK_F2:
+          // Key F2: Load
+          gameService.load();
           break;
         default:
           break;

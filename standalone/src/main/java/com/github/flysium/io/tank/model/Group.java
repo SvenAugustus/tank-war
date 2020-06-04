@@ -23,7 +23,6 @@
 package com.github.flysium.io.tank.model;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Group, same group is allies
@@ -31,20 +30,15 @@ import java.util.UUID;
  * @author Sven Augustus
  * @version 1.0
  */
-public class Group {
+public class Group implements java.io.Serializable {
 
-  // Group ID
-  private final String groupId = UUID.randomUUID().toString();
+  private static final long serialVersionUID = 8977251046757661244L;
 
   // Group Code
   private final String groupCode;
 
   public Group(String groupCode) {
     this.groupCode = groupCode;
-  }
-
-  public String getGroupId() {
-    return groupId;
   }
 
   public String getGroupCode() {
@@ -60,12 +54,12 @@ public class Group {
       return false;
     }
     Group group = (Group) o;
-    return Objects.equals(groupId, group.groupId);
+    return Objects.equals(groupCode, group.groupCode);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(groupId);
+    return Objects.hash(groupCode);
   }
 
   /**
