@@ -22,6 +22,7 @@
 
 package com.github.flysium.io.tank.service;
 
+import com.github.flysium.io.tank.config.ResourceManager;
 import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.Tank;
@@ -51,11 +52,13 @@ public class GameServiceImpl implements GameService {
     Tank mainTank = gameModel.getMainTank();
     mainTank.changeDirection(direction);
     mainTank.moveOn();
+    ResourceManager.getSingleton().asyncPlayMoveAudio();
   }
 
   @Override
   public void fireMainTank() {
     gameModel.getMainTank().fire();
+    ResourceManager.getSingleton().asyncPlayFireAudio();
   }
 
   @Override

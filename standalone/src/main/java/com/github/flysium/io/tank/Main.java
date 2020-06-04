@@ -22,6 +22,7 @@
 
 package com.github.flysium.io.tank;
 
+import com.github.flysium.io.tank.config.ResourceManager;
 import com.github.flysium.io.tank.config.WindowConfig;
 import com.github.flysium.io.tank.view.TankFrame;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,17 @@ public class Main {
         ui.automatic();
       }
     }, "automatic").start();
+
+    new Thread(() -> {
+      while (ResourceManager.getSingleton().isAudioOn()) {
+        ResourceManager.getSingleton().playWarAudio();
+        try {
+          TimeUnit.MILLISECONDS.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }, "music").start();
   }
 
 }

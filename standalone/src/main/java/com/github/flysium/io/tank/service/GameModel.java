@@ -24,6 +24,7 @@ package com.github.flysium.io.tank.service;
 
 import com.github.flysium.io.tank.config.AutomaticConfig;
 import com.github.flysium.io.tank.config.GameConfig;
+import com.github.flysium.io.tank.config.ResourceManager;
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.BulletAttributes;
 import com.github.flysium.io.tank.model.Direction;
@@ -119,6 +120,7 @@ public class GameModel {
         if (gameObject instanceof Tank) {
           Explode explode = createExplode((Tank) gameObject);
           explode.arise();
+          ResourceManager.getSingleton().asyncPlayExplodeAudio();
         }
         gameObjects.remove(gameObject.getId());
         return;

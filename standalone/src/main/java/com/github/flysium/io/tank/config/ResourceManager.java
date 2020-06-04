@@ -22,7 +22,9 @@
 
 package com.github.flysium.io.tank.config;
 
+import com.github.flysium.io.tank.config.utils.PropertiesUtils;
 import com.github.flysium.io.tank.model.Direction;
+import com.github.flysium.io.tank.view.utils.AudioUtils;
 import com.github.flysium.io.tank.view.utils.ImageUtils;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -46,6 +48,8 @@ public final class ResourceManager {
   private final Map<Direction, BufferedImage> bulletImage;
   private final List<BufferedImage> explodeImage = new ArrayList<>(20);
 
+  private final boolean audioOn;
+
   private ResourceManager() {
     mainTankImage = readBufferedImageToDirectionMap("images/mainTank.png");
     enemyTankImage = readBufferedImageToDirectionMap("images/enemyTank.png");
@@ -55,6 +59,8 @@ public final class ResourceManager {
       BufferedImage image = readBufferedImage("images/explode/e" + i + ".gif");
       explodeImage.add(image);
     }
+
+    audioOn = PropertiesUtils.getBooleanProperty("audio.on", false);
   }
 
   private Map<Direction, BufferedImage> readBufferedImageToDirectionMap(String pathName) {
@@ -83,6 +89,10 @@ public final class ResourceManager {
     return Holder.INSTANCE;
   }
 
+  public boolean isAudioOn() {
+    return audioOn;
+  }
+
   public Map<Direction, BufferedImage> getMainTankImage() {
     return Collections.unmodifiableMap(mainTankImage);
   }
@@ -97,6 +107,34 @@ public final class ResourceManager {
 
   public List<BufferedImage> getExplodeImage() {
     return Collections.unmodifiableList(explodeImage);
+  }
+
+  public void playWarAudio() {
+    if (!audioOn) {
+      return;
+    }
+    AudioUtils.play("audio/war1.wav");
+  }
+
+  public void asyncPlayFireAudio() {
+    if (!audioOn) {
+      return;
+    }
+    AudioUtils.asyncPlayChannel("audio/tank_fire.wav");
+  }
+
+  public void asyncPlayMoveAudio() {
+    if (!audioOn) {
+      return;
+    }
+    AudioUtils.asyncPlayChannel("audio/tank_move.wav");
+  }
+
+  public void asyncPlayExplodeAudio() {
+    if (!audioOn) {
+      return;
+    }
+    AudioUtils.asyncPlayChannel("audio/explode.wav");
   }
 
   private static class Holder {
