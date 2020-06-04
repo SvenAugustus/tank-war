@@ -27,6 +27,7 @@ import com.github.flysium.io.tank.config.GameConfig;
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.BulletAttributes;
 import com.github.flysium.io.tank.model.Direction;
+import com.github.flysium.io.tank.model.Explode;
 import com.github.flysium.io.tank.model.FinalRectangle;
 import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Group;
@@ -115,6 +116,10 @@ public class GameModel {
     // paint
     gameObjects.forEach((id, gameObject) -> {
       if (!gameObject.isAlive()) {
+        if (gameObject instanceof Tank) {
+          Explode explode = createExplode((Tank) gameObject);
+          explode.arise();
+        }
         gameObjects.remove(gameObject.getId());
         return;
       }
@@ -211,15 +216,12 @@ public class GameModel {
   }
 
   /**
-   * create a bullet and make it fly
+   * create a explode
    */
-  public Bullet createBullet(Tank tank) {
-    return createBullet(tank, BulletAttributes.builder()
-        .shape(painter.getBulletShape(tank.getGroup()))
-        .bulletFlyingSpeed(Group.MAIN_GROUP.equals(tank.getGroup()) ?
-            gameConfig.getMainTankBulletFlyingSpeed()
-            : gameConfig.getEnemyTankBulletFlyingSpeed())
-        .build());
+  public Explode createExplode(Tank tank) {
+    Explode explode = gameObjectFactory.createExplode(tank);
+    gameObjects.putIfAbsent(explode.getId(), explode);
+    return explode;
   }
 
   /**

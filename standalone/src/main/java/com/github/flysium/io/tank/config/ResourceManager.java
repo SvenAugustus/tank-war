@@ -25,8 +25,10 @@ package com.github.flysium.io.tank.config;
 import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.view.utils.ImageUtils;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.imageio.ImageIO;
@@ -42,11 +44,17 @@ public final class ResourceManager {
   private final Map<Direction, BufferedImage> mainTankImage;
   private final Map<Direction, BufferedImage> enemyTankImage;
   private final Map<Direction, BufferedImage> bulletImage;
+  private final List<BufferedImage> explodeImage = new ArrayList<>(20);
 
   private ResourceManager() {
     mainTankImage = readBufferedImageToDirectionMap("images/mainTank.png");
     enemyTankImage = readBufferedImageToDirectionMap("images/enemyTank.png");
     bulletImage = readBufferedImageToDirectionMap("images/bullet.png");
+
+    for (int i = 1; i <= 16; i++) {
+      BufferedImage image = readBufferedImage("images/explode/e" + i + ".gif");
+      explodeImage.add(image);
+    }
   }
 
   private Map<Direction, BufferedImage> readBufferedImageToDirectionMap(String pathName) {
@@ -65,7 +73,7 @@ public final class ResourceManager {
     try {
       return ImageIO.read(Objects.requireNonNull(ResourceManager.class.getClassLoader()
           .getResourceAsStream(pathName)));
-    } catch (Exception e) {
+    } catch (Throwable e) {
       e.printStackTrace();
     }
     return null;
@@ -85,6 +93,10 @@ public final class ResourceManager {
 
   public Map<Direction, BufferedImage> getBulletImage() {
     return Collections.unmodifiableMap(bulletImage);
+  }
+
+  public List<BufferedImage> getExplodeImage() {
+    return Collections.unmodifiableList(explodeImage);
   }
 
   private static class Holder {

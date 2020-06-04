@@ -20,39 +20,43 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.service.objectfactory;
+package com.github.flysium.io.tank.model;
 
-import com.github.flysium.io.tank.model.Bullet;
-import com.github.flysium.io.tank.model.BulletAttributes;
-import com.github.flysium.io.tank.model.DefaultBullet;
-import com.github.flysium.io.tank.model.DefaultExplode;
-import com.github.flysium.io.tank.model.DefaultTank;
-import com.github.flysium.io.tank.model.Explode;
-import com.github.flysium.io.tank.model.Group;
-import com.github.flysium.io.tank.model.Tank;
-import com.github.flysium.io.tank.model.TankAttributes;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Default <code>GameObjectFactory</code>
+ * abstract Explode
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class DefaultGameObjectFactory implements GameObjectFactory {
+public abstract class Explode extends GameObject implements Lifecycle {
 
-  @Override
-  public Tank createTank(Group group, int x, int y, TankAttributes attributes) {
-    return new DefaultTank(group, x, y, attributes);
+  private final Tank owner;
+
+  private final AtomicInteger step = new AtomicInteger(-1);
+
+  public Explode(Tank owner) {
+    super(owner.getGroup(), owner.location, Integer.MAX_VALUE);
+    this.owner = owner;
   }
 
-  @Override
-  public Explode createExplode(Tank owner) {
-    return new DefaultExplode(owner);
+  /**
+   * Get the owner
+   *
+   * @return tank
+   */
+  public Tank getOwner() {
+    return owner;
   }
 
-  @Override
-  public Bullet createBullet(Tank owner, BulletAttributes attributes) {
-    return new DefaultBullet(owner, attributes);
+  /**
+   * Get the next step
+   *
+   * @return the next step
+   */
+  public int next() {
+    return step.incrementAndGet();
   }
 
 }

@@ -24,6 +24,7 @@ package com.github.flysium.io.tank.service.objectfactory;
 
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.BulletAttributes;
+import com.github.flysium.io.tank.model.Explode;
 import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
@@ -46,6 +47,14 @@ public interface GameObjectFactory {
    * @return Tank instance
    */
   Tank createTank(Group group, final int x, final int y, TankAttributes attributes);
+
+  /**
+   * create Explode
+   *
+   * @param owner tank
+   * @return Explode instance
+   */
+  Explode createExplode(Tank owner);
 
   /**
    * create bullet

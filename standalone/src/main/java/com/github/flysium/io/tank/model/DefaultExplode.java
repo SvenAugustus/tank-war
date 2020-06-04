@@ -20,39 +20,17 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.service.objectfactory;
-
-import com.github.flysium.io.tank.model.Bullet;
-import com.github.flysium.io.tank.model.BulletAttributes;
-import com.github.flysium.io.tank.model.DefaultBullet;
-import com.github.flysium.io.tank.model.DefaultExplode;
-import com.github.flysium.io.tank.model.DefaultTank;
-import com.github.flysium.io.tank.model.Explode;
-import com.github.flysium.io.tank.model.Group;
-import com.github.flysium.io.tank.model.Tank;
-import com.github.flysium.io.tank.model.TankAttributes;
+package com.github.flysium.io.tank.model;
 
 /**
- * Default <code>GameObjectFactory</code>
+ * Default Explode
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class DefaultGameObjectFactory implements GameObjectFactory {
+public class DefaultExplode extends Explode {
 
-  @Override
-  public Tank createTank(Group group, int x, int y, TankAttributes attributes) {
-    return new DefaultTank(group, x, y, attributes);
+  public DefaultExplode(Tank owner) {
+    super(owner);
   }
-
-  @Override
-  public Explode createExplode(Tank owner) {
-    return new DefaultExplode(owner);
-  }
-
-  @Override
-  public Bullet createBullet(Tank owner, BulletAttributes attributes) {
-    return new DefaultBullet(owner, attributes);
-  }
-
 }
