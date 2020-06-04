@@ -22,6 +22,8 @@
 
 package com.github.flysium.io.tank.view;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -50,6 +52,16 @@ public class TankFrame extends JFrame {
         System.exit(0);
       }
     });
+  }
+
+  @Override
+  public void paint(Graphics g) {
+    Color c = g.getColor();
+    g.setColor(Color.YELLOW);
+    // draw the tank
+    g.fillRect(50, 50, 50, 50);
+    // reset Graphics's color
+    g.setColor(c);
   }
 
 }
