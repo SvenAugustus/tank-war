@@ -55,7 +55,7 @@ public class Main {
     new Thread(() -> {
       while (true) {
         try {
-          TimeUnit.MILLISECONDS.sleep(200);
+          TimeUnit.MILLISECONDS.sleep(WINDOW_CONFIG.getAutomaticMillis());
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

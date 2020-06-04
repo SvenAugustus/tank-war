@@ -22,6 +22,7 @@
 
 package com.github.flysium.io.tank.model;
 
+import com.github.flysium.io.tank.service.fire.FireStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,5 +42,6 @@ public class TankAttributes {
   private DirectionRectangularShape shape;
   private FinalRectangle bounds;
   private int movingSpeed;
+  private final FireStrategy fireStrategy;
 
 }

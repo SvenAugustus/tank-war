@@ -22,6 +22,7 @@
 
 package com.github.flysium.io.tank.service;
 
+import com.github.flysium.io.tank.config.AutomaticConfig;
 import com.github.flysium.io.tank.config.GameConfig;
 import com.github.flysium.io.tank.model.Bullet;
 import com.github.flysium.io.tank.model.BulletAttributes;
@@ -32,16 +33,20 @@ import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Lifecycle;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.model.TankAttributes;
+import com.github.flysium.io.tank.service.automatic.AutomaticStrategy;
+import com.github.flysium.io.tank.service.automatic.RandomAutomaticStrategy;
 import com.github.flysium.io.tank.service.collision.PhysicsCollisionDetectorChain;
+import com.github.flysium.io.tank.service.fire.DefaultFireStrategy;
+import com.github.flysium.io.tank.service.fire.FireStrategy;
 import com.github.flysium.io.tank.service.objectfactory.DefaultGameObjectFactory;
 import com.github.flysium.io.tank.service.objectfactory.GameObjectFactory;
 import com.github.flysium.io.tank.service.painter.GameObjectPainter;
 import com.github.flysium.io.tank.service.painter.SimpleGameObjectPainter;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -66,7 +71,7 @@ public class GameModel {
   public GameModel(final FinalRectangle bounds) {
     this.bounds = bounds;
     this.painter = new SimpleGameObjectPainter();
-    this.gameObjectFactory = new DefaultGameObjectFactory(this);
+    this.gameObjectFactory = new DefaultGameObjectFactory();
 
     // init main tank
     this.mainTank = createTank(Group.MAIN_GROUP, 50, 50);
@@ -153,6 +158,9 @@ public class GameModel {
             .movingSpeed(Group.MAIN_GROUP.equals(group) ?
                 gameConfig.getMainTankMovingSpeed()
                 : gameConfig.getEnemyTankMovingSpeed())
+            .fireStrategy(newFireStrategy(Group.MAIN_GROUP.equals(group) ?
+                gameConfig.getMainTankFireStrategy() :
+                gameConfig.getEnemyTankFireStrategy()))
             .build());
   }
 
@@ -163,6 +171,23 @@ public class GameModel {
     Tank tank = gameObjectFactory.createTank(group, x, y, attributes);
     gameObjects.putIfAbsent(tank.getId(), tank);
     return tank;
+  }
+
+  /**
+   * new <code>FireStrategy</code>.
+   *
+   * @param clazzName class name of <code>FireStrategy</code>.
+   * @return <code>FireStrategy</code> instance.
+   */
+  @SuppressWarnings("unchecked")
+  private FireStrategy newFireStrategy(String clazzName) {
+    try {
+      Class<FireStrategy> clazz = (Class<FireStrategy>) Class.forName(clazzName);
+      return clazz.getConstructor(GameModel.class).newInstance(this);
+    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return new DefaultFireStrategy(this);
   }
 
   /**
@@ -181,10 +206,20 @@ public class GameModel {
    * create a bullet and make it fly
    */
   public Bullet createBullet(Tank tank, BulletAttributes attributes) {
-    Bullet bullet = gameObjectFactory.createBullet(tank, attributes);
+    Bullet bullet = gameObjectFactory.createBullet(tank,
+        attributes.defaultOf(BulletAttributes.builder()
+            .shape(painter.getBulletShape(tank.getGroup()))
+            .bulletFlyingSpeed(Group.MAIN_GROUP.equals(tank.getGroup()) ?
+                gameConfig.getMainTankBulletFlyingSpeed()
+                : gameConfig.getEnemyTankBulletFlyingSpeed())
+            .build()));
     gameObjects.putIfAbsent(bullet.getId(), bullet);
     return bullet;
   }
+
+  private final AutomaticConfig automaticConfig = AutomaticConfig.getSingleton();
+  private final AutomaticStrategy automaticStrategy = newAutomaticStrategy(
+      automaticConfig.getEnemyTankStrategy());
 
   /**
    * automatic make enemies tanks to action (stop, go, fire, etc.)
@@ -198,16 +233,25 @@ public class GameModel {
             && gameObject.isAlive()
             && Group.ENEMY_GROUP.equals(gameObject.getGroup()))
         .forEach(gameObject -> {
-          Tank tank = (Tank) gameObject;
-          Random random = new Random();
-          int probability = random.nextInt(100);
-          if (probability < 5) {
-            tank.fire();
-          } else if (probability < 10) {
-            tank.changeDirection(Direction.values()[random.nextInt(4)]);
-          } else if (probability < 60) {
-            tank.moveOn();
-          }
+          automaticStrategy.automatic((Tank) gameObject);
         });
   }
+
+  /**
+   * new <code>AutomaticStrategy</code>.
+   *
+   * @param clazzName class name of <code>AutomaticStrategy</code>.
+   * @return <code>AutomaticStrategy</code> instance.
+   */
+  @SuppressWarnings("unchecked")
+  private AutomaticStrategy newAutomaticStrategy(String clazzName) {
+    try {
+      Class<AutomaticStrategy> clazz = (Class<AutomaticStrategy>) Class.forName(clazzName);
+      return clazz.getConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return new RandomAutomaticStrategy();
+  }
+
 }

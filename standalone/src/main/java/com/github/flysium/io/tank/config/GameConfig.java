@@ -23,6 +23,9 @@
 package com.github.flysium.io.tank.config;
 
 import com.github.flysium.io.tank.config.utils.PropertiesUtils;
+import com.github.flysium.io.tank.service.fire.DefaultFireStrategy;
+import com.github.flysium.io.tank.service.fire.FireStrategy;
+import java.util.function.Function;
 
 /**
  * The configuration of Game.
@@ -44,7 +47,24 @@ public final class GameConfig {
 
   private final int enemyTankBulletFlyingSpeed;
 
+  // fire system
+
+  private final String mainTankFireStrategy;
+
+  private final String enemyTankFireStrategy;
+
+  private static final Function<String, Boolean> CHECK_FIRE_SYSTEM_FUNCTION = v -> {
+    try {
+      Class<?> clazz = Class.forName(v);
+      return FireStrategy.class.isAssignableFrom(clazz);
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+    return false;
+  };
+
   private GameConfig() {
+    // game initialization
     mainTankMovingSpeed = PropertiesUtils
         .getIntegerProperty("game.mainTank.movingSpeed", v -> v > 0, 5);
     mainTankBulletFlyingSpeed = PropertiesUtils
@@ -55,6 +75,12 @@ public final class GameConfig {
         .getIntegerProperty("game.enemyTank.movingSpeed", v -> v > 0, 5);
     enemyTankBulletFlyingSpeed = PropertiesUtils
         .getIntegerProperty("game.enemyTank.bulletFlyingSpeed", v -> v > 0, 10);
+
+    // fire system
+    mainTankFireStrategy = PropertiesUtils.getProperty("game.mainTank.fireStrategy"
+        , CHECK_FIRE_SYSTEM_FUNCTION, DefaultFireStrategy.class.getCanonicalName());
+    enemyTankFireStrategy = PropertiesUtils.getProperty("game.enemyTank.fireStrategy"
+        , CHECK_FIRE_SYSTEM_FUNCTION, DefaultFireStrategy.class.getCanonicalName());
   }
 
   public static GameConfig getSingleton() {
@@ -79,6 +105,14 @@ public final class GameConfig {
 
   public int getEnemyTankBulletFlyingSpeed() {
     return enemyTankBulletFlyingSpeed;
+  }
+
+  public String getMainTankFireStrategy() {
+    return mainTankFireStrategy;
+  }
+
+  public String getEnemyTankFireStrategy() {
+    return enemyTankFireStrategy;
   }
 
   private static class Holder {

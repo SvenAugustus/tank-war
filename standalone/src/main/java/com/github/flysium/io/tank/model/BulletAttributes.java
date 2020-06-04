@@ -39,6 +39,28 @@ public class BulletAttributes {
 
   private Direction initialDirection;
   private DirectionRectangularShape shape;
-  private int bulletFlyingSpeed;
+  private Integer bulletFlyingSpeed;
+
+  /**
+   * load default <code>BulletAttributes</code>
+   *
+   * @param attributes <code>BulletAttributes</code>
+   * @return fresh this <code>BulletAttributes</code>
+   */
+  public BulletAttributes defaultOf(BulletAttributes attributes) {
+    if (attributes == null) {
+      return this;
+    }
+    if (initialDirection == null) {
+      initialDirection = attributes.getInitialDirection();
+    }
+    if (shape == null) {
+      shape = attributes.getShape();
+    }
+    if (bulletFlyingSpeed == null) {
+      bulletFlyingSpeed = attributes.getBulletFlyingSpeed();
+    }
+    return this;
+  }
 
 }

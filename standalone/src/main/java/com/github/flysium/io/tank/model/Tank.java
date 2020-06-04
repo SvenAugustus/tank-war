@@ -22,7 +22,7 @@
 
 package com.github.flysium.io.tank.model;
 
-import com.github.flysium.io.tank.service.GameModel;
+import com.github.flysium.io.tank.service.fire.FireStrategy;
 
 /**
  * abstract Tank.
@@ -32,14 +32,13 @@ import com.github.flysium.io.tank.service.GameModel;
  */
 public abstract class Tank extends BaseMovable implements Movable, Lifecycle {
 
-  private final GameModel gameModel;
+  private final FireStrategy fireStrategy;
 
-  public Tank(Group group, final int x, final int y, TankAttributes attributes,
-      final GameModel gameModel) {
+  public Tank(Group group, final int x, final int y, TankAttributes attributes) {
     super(group, new DirectionRectangle(x, y,
             attributes.getInitialDirection(), attributes.getShape(), attributes.getBounds()),
         attributes.getMovingSpeed());
-    this.gameModel = gameModel;
+    this.fireStrategy = attributes.getFireStrategy();
   }
 
   /**
@@ -49,9 +48,8 @@ public abstract class Tank extends BaseMovable implements Movable, Lifecycle {
     if (!isAlive()) {
       return;
     }
-    Bullet bullet = gameModel.createBullet(this);
-    if (bullet != null) {
-      bullet.arise();
+    if (fireStrategy != null) {
+      fireStrategy.fire(this);
     }
   }
 

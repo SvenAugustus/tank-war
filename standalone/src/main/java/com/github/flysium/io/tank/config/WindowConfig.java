@@ -38,10 +38,14 @@ public final class WindowConfig {
 
   private final int refreshMillis;
 
+  private final int automaticMillis;
+
   private WindowConfig() {
     windowWidth = PropertiesUtils.getIntegerProperty("window.width", v -> v >= 800, 800);
     windowHeight = PropertiesUtils.getIntegerProperty("window.height", v -> v >= 600, 600);
     refreshMillis = PropertiesUtils.getIntegerProperty("window.refreshMillis", v -> v >= 25, 50);
+    automaticMillis = PropertiesUtils.getIntegerProperty("window.automaticMillis", v -> v >= 25,
+        100);
   }
 
   public static WindowConfig getSingleton() {
@@ -58,6 +62,10 @@ public final class WindowConfig {
 
   public int getRefreshMillis() {
     return refreshMillis;
+  }
+
+  public int getAutomaticMillis() {
+    return automaticMillis;
   }
 
   private static class Holder {

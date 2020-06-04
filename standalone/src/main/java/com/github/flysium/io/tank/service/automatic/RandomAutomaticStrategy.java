@@ -20,32 +20,45 @@
  * SOFTWARE.
  */
 
-package com.github.flysium.io.tank.service.objectfactory;
+package com.github.flysium.io.tank.service.automatic;
 
-import com.github.flysium.io.tank.model.Bullet;
-import com.github.flysium.io.tank.model.BulletAttributes;
-import com.github.flysium.io.tank.model.DefaultBullet;
-import com.github.flysium.io.tank.model.DefaultTank;
+import com.github.flysium.io.tank.config.AutomaticConfig;
+import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.model.Group;
 import com.github.flysium.io.tank.model.Tank;
-import com.github.flysium.io.tank.model.TankAttributes;
+import java.util.Random;
 
 /**
- * Default <code>GameObjectFactory</code>
+ * Random Automatic Strategy.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-public class DefaultGameObjectFactory implements GameObjectFactory {
+public class RandomAutomaticStrategy implements AutomaticStrategy {
+
+  private final AutomaticConfig automaticConfig = AutomaticConfig.getSingleton();
 
   @Override
-  public Tank createTank(Group group, int x, int y, TankAttributes attributes) {
-    return new DefaultTank(group, x, y, attributes);
-  }
-
-  @Override
-  public Bullet createBullet(Tank owner, BulletAttributes attributes) {
-    return new DefaultBullet(owner, attributes);
+  public void automatic(Tank tank) {
+    if (tank == null || !tank.isAlive() || !Group.ENEMY_GROUP.equals(tank.getGroup())) {
+      return;
+    }
+    Random random = new Random();
+    int ratio = random.nextInt(100);
+    ratio -= automaticConfig.getEnemyTankRandomFireRatio();
+    if (ratio < 0) {
+      tank.fire();
+      return;
+    }
+    ratio -= automaticConfig.getEnemyTankRandomChangeDirectionRatio();
+    if (ratio < 0) {
+      tank.changeDirection(Direction.values()[random.nextInt(4)]);
+      return;
+    }
+    ratio -= automaticConfig.getEnemyTankRandomMoveOnRatio();
+    if (ratio < 0) {
+      tank.moveOn();
+    }
   }
 
 }
