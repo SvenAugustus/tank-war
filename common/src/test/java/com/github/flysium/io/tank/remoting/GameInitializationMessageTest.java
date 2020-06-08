@@ -25,10 +25,14 @@ package com.github.flysium.io.tank.remoting;
 import com.github.flysium.io.remoting.ProtocolMessage;
 import com.github.flysium.io.remoting.codec.ProtocolMessageDecoder;
 import com.github.flysium.io.remoting.codec.ProtocolMessageEncoder;
-import com.github.flysium.io.tank.remoting.client.ClientLoginMessage;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import com.github.flysium.io.tank.config.GameConfig;
+import com.github.flysium.io.tank.model.DefaultTank;
+import com.github.flysium.io.tank.model.Direction;
+import com.github.flysium.io.tank.model.DirectionRectangularShape;
+import com.github.flysium.io.tank.model.TankAttributes;
+import com.github.flysium.io.tank.remoting.server.GameInitializationMessage;
 import io.netty.channel.embedded.EmbeddedChannel;
+import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,23 +40,24 @@ import org.junit.Test;
  * @author Sven Augustus
  * @version 1.0
  */
-public class TankLoginRequestMessageTest {
+public class GameInitializationMessageTest {
 
   @Test
   public void testDecode() throws Exception {
     EmbeddedChannel channel = new EmbeddedChannel();
-    channel.pipeline().addLast(new ProtocolMessageDecoder(),
-        new SimpleChannelInboundHandler<ProtocolMessage>() {
-          @Override
-          protected void channelRead0(ChannelHandlerContext ctx, ProtocolMessage msg)
-              throws Exception {
-            System.out.println(msg);
-          }
-        });
+    channel.pipeline().addLast(new ProtocolMessageDecoder());
 
-    ProtocolMessage m1 = ClientLoginMessage.builder()
-        .username("c1")
-        .password("123456")
+    ProtocolMessage m1 = GameInitializationMessage.builder()
+        .success(true)
+        .userId(UUID.randomUUID().toString())
+        .tank(new DefaultTank(50, 50,
+            TankAttributes.builder()
+                .initialHealth(100)
+                .initialDirection(Direction.DOWN)
+                .shape(new DirectionRectangularShape(50))
+                .bounds(GameConfig.getSingleton().getFinalRectangle())
+                .movingSpeed(5)
+                .build()))
         .build()
         .convertToProtocolMessage();
 
@@ -68,9 +73,17 @@ public class TankLoginRequestMessageTest {
     channel.pipeline().addLast(new ProtocolMessageDecoder(),
         new ProtocolMessageEncoder());
 
-    ProtocolMessage m1 = ClientLoginMessage.builder()
-        .username("c1")
-        .password("123456")
+    ProtocolMessage m1 = GameInitializationMessage.builder()
+        .success(true)
+        .userId(UUID.randomUUID().toString())
+        .tank(new DefaultTank(50, 50,
+            TankAttributes.builder()
+                .initialHealth(100)
+                .initialDirection(Direction.DOWN)
+                .shape(new DirectionRectangularShape(50))
+                .bounds(GameConfig.getSingleton().getFinalRectangle())
+                .movingSpeed(5)
+                .build()))
         .build()
         .convertToProtocolMessage();
 

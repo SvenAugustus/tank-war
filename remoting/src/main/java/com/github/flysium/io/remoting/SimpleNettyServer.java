@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Chat Server
+ * Simple Netty Server
  *
  * @author Sven Augustus
  * @version 1.0

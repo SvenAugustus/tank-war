@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Chat Client.
+ * Simple Netty Client.
  *
  * @author Sven Augustus
  * @version 1.0
