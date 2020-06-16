@@ -22,19 +22,12 @@
 
 package com.github.flysium.io.tank.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-
 /**
  * Bullet Attributes
  *
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class BulletAttributes {
 
   private Direction initialDirection;
@@ -67,4 +60,72 @@ public class BulletAttributes {
     return this;
   }
 
+  public Direction getInitialDirection() {
+    return initialDirection;
+  }
+
+  public void setInitialDirection(Direction initialDirection) {
+    this.initialDirection = initialDirection;
+  }
+
+  public DirectionRectangularShape getShape() {
+    return shape;
+  }
+
+  public void setShape(DirectionRectangularShape shape) {
+    this.shape = shape;
+  }
+
+  public Integer getBulletFlyingSpeed() {
+    return bulletFlyingSpeed;
+  }
+
+  public void setBulletFlyingSpeed(Integer bulletFlyingSpeed) {
+    this.bulletFlyingSpeed = bulletFlyingSpeed;
+  }
+
+  public Integer getDamageValue() {
+    return damageValue;
+  }
+
+  public void setDamageValue(Integer damageValue) {
+    this.damageValue = damageValue;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final BulletAttributes bulletAttributes;
+
+    private Builder() {
+      bulletAttributes = new BulletAttributes();
+    }
+
+    public Builder initialDirection(Direction initialDirection) {
+      bulletAttributes.setInitialDirection(initialDirection);
+      return this;
+    }
+
+    public Builder shape(DirectionRectangularShape shape) {
+      bulletAttributes.setShape(shape);
+      return this;
+    }
+
+    public Builder bulletFlyingSpeed(Integer bulletFlyingSpeed) {
+      bulletAttributes.setBulletFlyingSpeed(bulletFlyingSpeed);
+      return this;
+    }
+
+    public Builder damageValue(Integer damageValue) {
+      bulletAttributes.setDamageValue(damageValue);
+      return this;
+    }
+
+    public BulletAttributes build() {
+      return bulletAttributes;
+    }
+  }
 }

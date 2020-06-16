@@ -23,9 +23,6 @@
 package com.github.flysium.io.tank.model;
 
 import com.github.flysium.io.tank.service.fire.FireStrategy;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * Tank Attributes
@@ -33,9 +30,6 @@ import lombok.Data;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class TankAttributes {
 
   private int initialHealth;
@@ -43,6 +37,100 @@ public class TankAttributes {
   private DirectionRectangularShape shape;
   private FinalRectangle bounds;
   private int movingSpeed;
-  private final FireStrategy fireStrategy;
+  private FireStrategy fireStrategy;
 
+  public int getInitialHealth() {
+    return initialHealth;
+  }
+
+  public void setInitialHealth(int initialHealth) {
+    this.initialHealth = initialHealth;
+  }
+
+  public Direction getInitialDirection() {
+    return initialDirection;
+  }
+
+  public void setInitialDirection(Direction initialDirection) {
+    this.initialDirection = initialDirection;
+  }
+
+  public DirectionRectangularShape getShape() {
+    return shape;
+  }
+
+  public void setShape(DirectionRectangularShape shape) {
+    this.shape = shape;
+  }
+
+  public FinalRectangle getBounds() {
+    return bounds;
+  }
+
+  public void setBounds(FinalRectangle bounds) {
+    this.bounds = bounds;
+  }
+
+  public int getMovingSpeed() {
+    return movingSpeed;
+  }
+
+  public void setMovingSpeed(int movingSpeed) {
+    this.movingSpeed = movingSpeed;
+  }
+
+  public FireStrategy getFireStrategy() {
+    return fireStrategy;
+  }
+
+  public void setFireStrategy(FireStrategy fireStrategy) {
+    this.fireStrategy = fireStrategy;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final TankAttributes tankAttributes;
+
+    private Builder() {
+      tankAttributes = new TankAttributes();
+    }
+
+    public Builder initialHealth(int initialHealth) {
+      tankAttributes.setInitialHealth(initialHealth);
+      return this;
+    }
+
+    public Builder initialDirection(Direction initialDirection) {
+      tankAttributes.setInitialDirection(initialDirection);
+      return this;
+    }
+
+    public Builder shape(DirectionRectangularShape shape) {
+      tankAttributes.setShape(shape);
+      return this;
+    }
+
+    public Builder bounds(FinalRectangle bounds) {
+      tankAttributes.setBounds(bounds);
+      return this;
+    }
+
+    public Builder movingSpeed(int movingSpeed) {
+      tankAttributes.setMovingSpeed(movingSpeed);
+      return this;
+    }
+
+    public Builder fireStrategy(FireStrategy fireStrategy) {
+      tankAttributes.setFireStrategy(fireStrategy);
+      return this;
+    }
+
+    public TankAttributes build() {
+      return tankAttributes;
+    }
+  }
 }
