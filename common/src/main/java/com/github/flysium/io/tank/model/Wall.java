@@ -22,19 +22,24 @@
 
 package com.github.flysium.io.tank.model;
 
-import lombok.ToString;
-
 /**
  * Wall
  *
  * @author Sven Augustus
  * @version 1.0
  */
-@ToString
 public class Wall extends GameObject {
 
   public Wall(StaticRectangle location) {
     super(location, Integer.MAX_VALUE);
   }
 
+  @Override
+  public String toString() {
+    return "Wall{" +
+        "id='" + id + '\'' +
+        ", location=" + location +
+        ", alive=" + alive +
+        '}';
+  }
 }

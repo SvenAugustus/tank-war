@@ -24,13 +24,9 @@ package com.github.flysium.io.tank.remoting.server;
 
 import com.github.flysium.io.remoting.ProtocolMessage;
 import com.github.flysium.io.serialization.SerializerUtils;
-import com.github.flysium.io.tank.model.Direction;
 import com.github.flysium.io.tank.remoting.ProtocolMessageConverter;
 import com.github.flysium.io.tank.remoting.TankMessageType;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * Status Update
@@ -38,9 +34,6 @@ import lombok.Data;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class StatusUpdateMessage implements java.io.Serializable, ProtocolMessageConverter {
 
   private static final long serialVersionUID = -9179327158805001858L;
@@ -56,22 +49,20 @@ public class StatusUpdateMessage implements java.io.Serializable, ProtocolMessag
         SerializerUtils.toBytes(this));
   }
 
-  @Data
-  @Builder
-  @AllArgsConstructor
-  public static class ObjectStatus implements java.io.Serializable {
+  public StatusUpdateMessage() {
+  }
 
-    private static final long serialVersionUID = -94819986374759692L;
+  public StatusUpdateMessage(List<ObjectStatus> list) {
+    this.list = list;
+  }
 
-    private String id;
+  public List<ObjectStatus> getList() {
+    return list;
+  }
 
-    private Direction direction;
-
-    private int x;
-
-    private int y;
-
-    private int health;
+  public void setList(
+      List<ObjectStatus> list) {
+    this.list = list;
   }
 
 }

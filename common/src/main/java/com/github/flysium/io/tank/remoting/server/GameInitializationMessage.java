@@ -28,9 +28,6 @@ import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.model.Tank;
 import com.github.flysium.io.tank.remoting.TankMessageType;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * Game Initialization
@@ -38,9 +35,6 @@ import lombok.Data;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class GameInitializationMessage implements java.io.Serializable {
 
   private static final long serialVersionUID = 4803384143357221964L;
@@ -63,4 +57,85 @@ public class GameInitializationMessage implements java.io.Serializable {
         SerializerUtils.toBytes(this));
   }
 
+  public boolean isSuccess() {
+    return success;
+  }
+
+  public void setSuccess(boolean success) {
+    this.success = success;
+  }
+
+  public String getError() {
+    return error;
+  }
+
+  public void setError(String error) {
+    this.error = error;
+  }
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public Tank getTank() {
+    return tank;
+  }
+
+  public void setTank(Tank tank) {
+    this.tank = tank;
+  }
+
+  public List<GameObject> getObjects() {
+    return objects;
+  }
+
+  public void setObjects(List<GameObject> objects) {
+    this.objects = objects;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final GameInitializationMessage gameInitializationMessage;
+
+    private Builder() {
+      gameInitializationMessage = new GameInitializationMessage();
+    }
+
+    public Builder success(boolean success) {
+      gameInitializationMessage.setSuccess(success);
+      return this;
+    }
+
+    public Builder error(String error) {
+      gameInitializationMessage.setError(error);
+      return this;
+    }
+
+    public Builder userId(String userId) {
+      gameInitializationMessage.setUserId(userId);
+      return this;
+    }
+
+    public Builder tank(Tank tank) {
+      gameInitializationMessage.setTank(tank);
+      return this;
+    }
+
+    public Builder objects(List<GameObject> objects) {
+      gameInitializationMessage.setObjects(objects);
+      return this;
+    }
+
+    public GameInitializationMessage build() {
+      return gameInitializationMessage;
+    }
+  }
 }

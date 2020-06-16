@@ -49,8 +49,8 @@ import com.github.flysium.io.tank.remoting.client.TankMoveMessage;
 import com.github.flysium.io.tank.remoting.server.GameInitializationMessage;
 import com.github.flysium.io.tank.remoting.server.NewObjectMessage;
 import com.github.flysium.io.tank.remoting.server.ObjectDieMessage;
+import com.github.flysium.io.tank.remoting.server.ObjectStatus;
 import com.github.flysium.io.tank.remoting.server.StatusUpdateMessage;
-import com.github.flysium.io.tank.remoting.server.StatusUpdateMessage.ObjectStatus;
 import com.github.flysium.io.tank.service.collision.PhysicsCollisionDetectorChain;
 import com.github.flysium.io.tank.service.objectfactory.DefaultGameObjectFactory;
 import com.github.flysium.io.tank.service.objectfactory.GameObjectFactory;
@@ -298,9 +298,7 @@ public class TankServerService {
   private void publishStatusUpdateMessages(List<ObjectStatus> update) {
     if (!update.isEmpty()) {
       try {
-        StatusUpdateMessage msg = StatusUpdateMessage.builder()
-            .list(update)
-            .build();
+        StatusUpdateMessage msg = new StatusUpdateMessage(update);
         logger.debug("--------->Status Update: {}", msg);
         server.sendMessageToAllChannels(msg.convertToProtocolMessage());
       } catch (Exception e) {

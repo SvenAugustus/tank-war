@@ -22,15 +22,12 @@
 
 package com.github.flysium.io.tank.model;
 
-import lombok.ToString;
-
 /**
  * Default Tank.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-@ToString
 public class DefaultTank extends Tank {
 
   public DefaultTank(int x, int y, TankAttributes attributes) {

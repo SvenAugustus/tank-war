@@ -22,15 +22,12 @@
 
 package com.github.flysium.io.tank.model;
 
-import lombok.ToString;
-
 /**
  * Default Bullet.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-@ToString
 public class DefaultBullet extends Bullet {
 
   public DefaultBullet(Tank owner, BulletAttributes attributes) {

@@ -22,15 +22,12 @@
 
 package com.github.flysium.io.tank.model;
 
-import lombok.ToString;
-
 /**
  * Default Explode
  *
  * @author Sven Augustus
  * @version 1.0
  */
-@ToString
 public class DefaultExplode extends Explode {
 
   public DefaultExplode(Tank owner) {

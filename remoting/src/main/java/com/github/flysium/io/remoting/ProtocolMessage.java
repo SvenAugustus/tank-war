@@ -22,21 +22,12 @@
 
 package com.github.flysium.io.remoting;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /**
  * Protocol Message.
  *
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProtocolMessage implements java.io.Serializable {
 
   private static final long serialVersionUID = -8070044213749552890L;
@@ -62,4 +53,59 @@ public class ProtocolMessage implements java.io.Serializable {
         .build();
   }
 
+  public short getType() {
+    return type;
+  }
+
+  public void setType(short type) {
+    this.type = type;
+  }
+
+  public int getLength() {
+    return length;
+  }
+
+  public void setLength(int length) {
+    this.length = length;
+  }
+
+  public byte[] getBody() {
+    return body;
+  }
+
+  public void setBody(byte[] body) {
+    this.body = body;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private ProtocolMessage protocolMessage;
+
+    private Builder() {
+      protocolMessage = new ProtocolMessage();
+    }
+
+    public Builder type(short type) {
+      protocolMessage.setType(type);
+      return this;
+    }
+
+    public Builder length(int length) {
+      protocolMessage.setLength(length);
+      return this;
+    }
+
+    public Builder body(byte[] body) {
+      protocolMessage.setBody(body);
+      return this;
+    }
+
+    public ProtocolMessage build() {
+      return protocolMessage;
+    }
+  }
 }

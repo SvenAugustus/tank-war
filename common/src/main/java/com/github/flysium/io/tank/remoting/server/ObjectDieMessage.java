@@ -26,9 +26,6 @@ import com.github.flysium.io.remoting.ProtocolMessage;
 import com.github.flysium.io.serialization.SerializerUtils;
 import com.github.flysium.io.tank.remoting.ProtocolMessageConverter;
 import com.github.flysium.io.tank.remoting.TankMessageType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * Game Object Die
@@ -36,9 +33,6 @@ import lombok.Data;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class ObjectDieMessage implements java.io.Serializable, ProtocolMessageConverter {
 
   private static final long serialVersionUID = -9167831730797439102L;
@@ -56,4 +50,46 @@ public class ObjectDieMessage implements java.io.Serializable, ProtocolMessageCo
         SerializerUtils.toBytes(this));
   }
 
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final ObjectDieMessage objectDieMessage;
+
+    private Builder() {
+      objectDieMessage = new ObjectDieMessage();
+    }
+
+    public Builder id(String id) {
+      objectDieMessage.setId(id);
+      return this;
+    }
+
+    public Builder type(String type) {
+      objectDieMessage.setType(type);
+      return this;
+    }
+
+    public ObjectDieMessage build() {
+      return objectDieMessage;
+    }
+  }
 }

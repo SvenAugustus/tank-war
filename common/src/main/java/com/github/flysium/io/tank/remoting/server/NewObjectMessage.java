@@ -27,10 +27,6 @@ import com.github.flysium.io.serialization.SerializerUtils;
 import com.github.flysium.io.tank.model.GameObject;
 import com.github.flysium.io.tank.remoting.ProtocolMessageConverter;
 import com.github.flysium.io.tank.remoting.TankMessageType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * New Object
@@ -38,10 +34,6 @@ import lombok.NoArgsConstructor;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class NewObjectMessage implements java.io.Serializable, ProtocolMessageConverter {
 
   private static final long serialVersionUID = 2805089728853197611L;
@@ -59,4 +51,46 @@ public class NewObjectMessage implements java.io.Serializable, ProtocolMessageCo
         SerializerUtils.toBytes(this));
   }
 
+  public String getOwnerUserId() {
+    return ownerUserId;
+  }
+
+  public void setOwnerUserId(String ownerUserId) {
+    this.ownerUserId = ownerUserId;
+  }
+
+  public GameObject getObject() {
+    return object;
+  }
+
+  public void setObject(GameObject object) {
+    this.object = object;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final NewObjectMessage newObjectMessage;
+
+    private Builder() {
+      newObjectMessage = new NewObjectMessage();
+    }
+
+    public Builder ownerUserId(String ownerUserId) {
+      newObjectMessage.setOwnerUserId(ownerUserId);
+      return this;
+    }
+
+    public Builder object(GameObject object) {
+      newObjectMessage.setObject(object);
+      return this;
+    }
+
+    public NewObjectMessage build() {
+      return newObjectMessage;
+    }
+  }
 }

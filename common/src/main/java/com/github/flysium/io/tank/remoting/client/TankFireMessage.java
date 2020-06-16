@@ -26,9 +26,6 @@ import com.github.flysium.io.remoting.ProtocolMessage;
 import com.github.flysium.io.serialization.SerializerUtils;
 import com.github.flysium.io.tank.remoting.ProtocolMessageConverter;
 import com.github.flysium.io.tank.remoting.TankMessageType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * Tank fire
@@ -36,9 +33,6 @@ import lombok.Data;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class TankFireMessage implements java.io.Serializable, ProtocolMessageConverter {
 
   private static final long serialVersionUID = 2726416219555345477L;
@@ -54,4 +48,33 @@ public class TankFireMessage implements java.io.Serializable, ProtocolMessageCon
         SerializerUtils.toBytes(this));
   }
 
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final TankFireMessage tankFireMessage;
+
+    private Builder() {
+      tankFireMessage = new TankFireMessage();
+    }
+
+    public Builder userId(String userId) {
+      tankFireMessage.setUserId(userId);
+      return this;
+    }
+
+    public TankFireMessage build() {
+      return tankFireMessage;
+    }
+  }
 }

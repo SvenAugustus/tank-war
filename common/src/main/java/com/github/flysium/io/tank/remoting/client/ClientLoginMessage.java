@@ -26,9 +26,6 @@ import com.github.flysium.io.remoting.ProtocolMessage;
 import com.github.flysium.io.serialization.SerializerUtils;
 import com.github.flysium.io.tank.remoting.ProtocolMessageConverter;
 import com.github.flysium.io.tank.remoting.TankMessageType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * Login request
@@ -36,9 +33,6 @@ import lombok.Data;
  * @author Sven Augustus
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
 public class ClientLoginMessage implements java.io.Serializable, ProtocolMessageConverter {
 
   private static final long serialVersionUID = 5628649184698668252L;
@@ -56,4 +50,46 @@ public class ClientLoginMessage implements java.io.Serializable, ProtocolMessage
         SerializerUtils.toBytes(this));
   }
 
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+
+    private final ClientLoginMessage clientLoginMessage;
+
+    private Builder() {
+      clientLoginMessage = new ClientLoginMessage();
+    }
+
+    public Builder username(String username) {
+      clientLoginMessage.setUsername(username);
+      return this;
+    }
+
+    public Builder password(String password) {
+      clientLoginMessage.setPassword(password);
+      return this;
+    }
+
+    public ClientLoginMessage build() {
+      return clientLoginMessage;
+    }
+  }
 }
