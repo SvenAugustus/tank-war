@@ -53,11 +53,11 @@ public class ProtocolMessageDecoder extends LengthFieldBasedFrameDecoder {
     if (in.readableBytes() <= BASE_LENGTH) {
       return null;
     }
+    in.markReaderIndex();
     short type = in.readShort();
     int length = in.readInt();
-    in.markReaderIndex();
 
-    if (length <= BASE_LENGTH) {
+    if (in.readableBytes() < length) {
       in.resetReaderIndex();
       return null;
     }

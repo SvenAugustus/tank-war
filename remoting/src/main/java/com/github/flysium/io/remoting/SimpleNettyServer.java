@@ -28,6 +28,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -68,6 +69,10 @@ public class SimpleNettyServer {
       new ServerBootstrap()
           .group(bossGroup, workGroup)
           .channel(NioServerSocketChannel.class)
+          .option(ChannelOption.SO_BACKLOG, 1000)
+          .childOption(ChannelOption.SO_KEEPALIVE, true)
+          .childOption(ChannelOption.TCP_NODELAY, true)
+          .childOption(ChannelOption.SO_LINGER, 100)
           .childHandler(new ChannelInitializer<SocketChannel>() {
 
             @Override

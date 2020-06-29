@@ -1,7 +1,7 @@
 # The War of Tank
 
 #### Description
-**The game of tank war based on Java Swing which you can learn stating Java SE, and Simple Netty Server. **
+**The game of tank war based on Java Swing which you can learn to start Java SE, and Simple Netty Server.**
 
 #### How to Start
 ```
